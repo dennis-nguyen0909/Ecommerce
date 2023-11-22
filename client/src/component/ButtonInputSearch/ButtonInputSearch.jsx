@@ -9,7 +9,7 @@ export const ButtonInputSearch = (props) => {
         textButton,
         bordered,
         backgroundColor = "#fff",
-        backgroundButton = "black",
+        backgroundButton = "rgb(240,213,219)",
         colorButton = "#fff"
     } = props
     return (

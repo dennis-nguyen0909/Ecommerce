@@ -14,13 +14,11 @@ function App() {
             const Page = item.page
             const Layout = item.isShowHeader ? Default : Fragment
             return (
-
               <Route key={item.path} path={item.path} element={
                 <Layout>
                   <Page />
                 </Layout>
               } />
-
             )
           })}
         </Routes>

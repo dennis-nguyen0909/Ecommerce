@@ -50,7 +50,7 @@ export const NavbarComponent = () => {
             <WrapperContent>
                 {renderContent('text', ['NIKE', 'ADIDAS', 'SAMBA', 'MLB'])}
             </WrapperContent>
-            <WrapperContent>
+            {/* <WrapperContent>
                 {renderContent('checkbox', [
                     { value: 'A', label: 'A' },
                     { value: 'B', label: 'B' }
@@ -64,7 +64,7 @@ export const NavbarComponent = () => {
                     'dưới 500', 'trên 500'
 
                 ])}
-            </WrapperContent>
+            </WrapperContent> */}
         </div >
     )
 }

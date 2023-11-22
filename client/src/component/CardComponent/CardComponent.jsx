@@ -23,7 +23,9 @@ export const CardComponent = () => {
                 <span>Đã bán | 100+</span>
             </WrapperReportText>
             <WrapperPriceText>
-                500.000vnd
+                <span style={{ marginRight: '10px' }}>
+                    500.000vnd
+                </span>
                 <WrapperDiscountText>-5%</WrapperDiscountText>
             </WrapperPriceText>
         </WrapperCardStyle>
