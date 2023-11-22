@@ -1,12 +1,27 @@
-const express = require('express')
+// require('dotenv').config();
+
+const express = require('express');
+
+const dotenv = require('dotenv');
+dotenv.config();
+const mongoose = require('mongoose');
 const app = express();
-require('dotenv').config();
-
-const PORT = process.env.PORT || 8888
-
+const port = process.env.PORT_LOCAL || 8888
 app.get("/", (req, res) => {
     res.send('hello');
 })
-app.listen(PORT, () => {
-    console.log(`Server is running on ${PORT}`);
+mongoose.connect(process.env.MONGODB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(() => {
+        console.log("Connect database successfully!!")
+    })
+    .catch((err) => {
+        console.log("Connect database error!!", err)
+        console.log("MONGO!!", port)
+
+    });
+app.listen(port, () => {
+    console.log(`Server is running on ${port}`);
 })
