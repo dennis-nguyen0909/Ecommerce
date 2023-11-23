@@ -62,10 +62,6 @@ const deleteProduct = async (req, res) => {
         })
     }
 }
-const getProduct = (req, res) => {
-
-}
-
 const getDetailProduct = async (req, res) => {
     try {
         const idUser = req.params.id;
@@ -89,14 +85,16 @@ const getDetailProduct = async (req, res) => {
 }
 const getAllProduct = async (req, res) => {
     try {
-
-        const response = await ProductService.getAllProduct();
-        return res.status(404).json({
+        // http://localhost:8080/api/product/get-all-product?page=1&limit=2&sort=asc
+        // lấy từ query
+        const { page, limit, sort, filter } = req.query;
+        const response = await ProductService.getAllProduct(Number(page) || 0, Number(limit) || 8, sort, filter);
+        console.log(response)
+        return res.status(200).json({
             status: "Ok",
             message: "Success",
             data: response
         })
-
     } catch (error) {
         return res.status(404).json({
             status: "Error",

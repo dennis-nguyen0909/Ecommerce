@@ -97,14 +97,48 @@ const getDetailProduct = (id) => {
         }
     })
 }
-const getAllProduct = () => {
+const getAllProduct = (page, limit, sort, filter) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const product = await Product.find();
+            const totalProduct = await Product.countDocuments();
+            if (filter) {
+                // http://localhost:8080/api/product/get-all-product?page=1&limit=2&filter=name&filter=puma6
+                const label = filter[0];
+                const allProductFilter = await Product.find({ [label]: { $regex: filter[1] } })
+                resolve({
+                    status: 'Ok',
+                    message: "Get All Product filter Successfully!!",
+                    data: allProductFilter,
+                    total: totalProduct,
+                    pageCurrent: Number(page + 1),
+                    totalPage: Math.ceil(totalProduct / limit)
+                })
+            }
+            if (sort) {
+                //http://localhost:8080/api/product/get-all-product?page=1&limit=2&sort=asc&sort=id
+                // lấy ra cái sort thứ 2 -> sort theo id hoặc sort theo name hoặc theo giá => sort=name,sort=id,sort=price
+                const objectSort = {}
+                objectSort[sort[1]] = sort[0]
+                const allProductSort = await Product.find().limit(limit).skip(page * limit).sort(objectSort);
+                resolve({
+                    status: 'Ok',
+                    message: "Get All Product sort Successfully!!",
+                    data: allProductSort,
+                    total: totalProduct,
+                    pageCurrent: Number(page + 1),
+                    totalPage: Math.ceil(totalProduct / limit)
+                })
+            }
+            const allProduct = await Product.find().limit(limit).skip(page * limit).sort({
+                name: sort
+            });
             resolve({
                 status: 'Ok',
                 message: "Get All Product Successfully!!",
-                data: product
+                data: allProduct,
+                total: totalProduct,
+                pageCurrent: Number(page + 1),
+                totalPage: Math.ceil(totalProduct / limit)
             })
         } catch (error) {
             reject(error)
