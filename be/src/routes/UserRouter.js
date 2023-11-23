@@ -1,6 +1,6 @@
 const express = require('express')
 const UserController = require('../controllers/UserController');
-const { authMiddleware } = require('../middleware/authMiddleware');
+const { authMiddleware, authUserMiddleware } = require('../middleware/authMiddleware');
 const router = express.Router();
 const UserRouter = (app) => {
     router.post('/sign-up', UserController.createUser);
@@ -8,7 +8,8 @@ const UserRouter = (app) => {
     router.put('/update-user/:id', UserController.updateUser);
     router.delete('/delete-user/:id', authMiddleware, UserController.deleteUser);
     router.get('/getAll', authMiddleware, UserController.getAllUser);
-    router.get('/get-details/:id', authMiddleware, UserController.getDetailUser);
+    router.get('/get-details/:id', authUserMiddleware, UserController.getDetailUser);
+    router.post('/refresh-token', UserController.refreshToken);
     return app.use('/api/user', router);
 }
 

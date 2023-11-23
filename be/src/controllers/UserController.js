@@ -1,4 +1,5 @@
 const UserService = require('../services/UserService')
+const JWTservice = require('../services/JWTservice')
 const createUser = async (req, res) => {
     try {
         //#1. Lấy ra dữ liệu & validation
@@ -142,4 +143,25 @@ const getDetailUser = async (req, res) => {
         })
     }
 }
-module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser }
+
+const refreshToken = async (req, res) => {
+    try {
+        const token = req.headers.token.split(' ')[1];
+        if (!token) {
+            return res.status(400).json({
+                status: 'Lỗi',
+                message: "Không có token"
+            })
+        }
+        const response = await JWTservice.refreshTokenService(token);
+        return res.status(200).json({
+            message: "Ok",
+            data: response
+        })
+    } catch (error) {
+        return res.status(400).json({
+            message: error
+        })
+    }
+}
+module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser, refreshToken }
