@@ -1,15 +1,18 @@
-// require('dotenv').config();
-
 const express = require('express');
-
 const dotenv = require('dotenv');
 dotenv.config();
 const mongoose = require('mongoose');
 const app = express();
+const bodyParser = require('body-parser')
 const port = process.env.PORT_LOCAL || 8888
-app.get("/", (req, res) => {
-    res.send('hello');
-})
+const UserRouter = require('./routes/UserRouter')
+
+// Bodyparser dat trước router
+app.use(bodyParser.json());
+
+
+UserRouter(app);
+
 mongoose.connect(process.env.MONGODB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
