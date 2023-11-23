@@ -109,7 +109,6 @@ const updateUser = (id, data) => {
 const deleteUser = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            // const checkUser = await User.findById(id);
             const checkUser = await User.findOne({
                 _id: id
             })

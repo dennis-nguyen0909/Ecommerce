@@ -5,13 +5,15 @@ const mongoose = require('mongoose');
 const app = express();
 const bodyParser = require('body-parser')
 const port = process.env.PORT_LOCAL || 8888
-const UserRouter = require('./routes/UserRouter')
+const UserRouter = require('./routes/UserRouter');
+const ProductRouter = require('./routes/ProductRouter');
 
 // Bodyparser dat trước router
 app.use(bodyParser.json());
 
 
 UserRouter(app);
+ProductRouter(app);
 
 mongoose.connect(process.env.MONGODB, {
     useNewUrlParser: true,
