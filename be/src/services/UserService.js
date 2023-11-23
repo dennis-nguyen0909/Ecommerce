@@ -82,4 +82,87 @@ const loginUser = (userLogin) => {
         }
     })
 }
-module.exports = { createUser, loginUser }
+const updateUser = (id, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // const checkUser = await User.findById(id);
+            const checkUser = await User.findOne({
+                _id: id
+            })
+            if (checkUser === null) {
+                resolve({
+                    message: "User not defined!!",
+                    status: "OK"
+                })
+            }
+            const updateUser = await User.findByIdAndUpdate(id, data, { new: true });
+            resolve({
+                status: 'Ok',
+                message: "Update Success!!",
+                data: updateUser
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+const deleteUser = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // const checkUser = await User.findById(id);
+            const checkUser = await User.findOne({
+                _id: id
+            })
+            if (checkUser === null) {
+                resolve({
+                    message: "User not defined!!",
+                    status: "OK"
+                })
+            }
+            await User.findByIdAndDelete(id);
+            resolve({
+                status: 'Ok',
+                message: "Delete User Success!!",
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+const getAllUser = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const getUser = await User.find();
+            resolve({
+                status: 'Ok',
+                message: "Get All User Success!!",
+                data: getUser
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+const getDetailUser = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const user = await User.findOne({
+                _id: userId
+            })
+            if (user === null) {
+                resolve({
+                    message: "User not defined!!",
+                    status: "OK"
+                })
+            }
+            resolve({
+                status: 'Ok',
+                message: " Success!!",
+                data: user
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser }  
