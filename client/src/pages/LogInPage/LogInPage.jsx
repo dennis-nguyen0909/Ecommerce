@@ -31,7 +31,7 @@ export const LogInPage = () => {
             message.success("Đăng nhập thành công !")
             navigate('/')
             const access_token = data.message?.access_token
-            localStorage.setItem('access_token', access_token)
+            localStorage.setItem('access_token', JSON.stringify(access_token))
             if (access_token) {
                 const decoded = jwtDecode(access_token) // jwt sẽ giải mã token và trả về payload gồm dữ liệu đã giải
                 if (decoded?.id) {
@@ -44,10 +44,9 @@ export const LogInPage = () => {
     }, [isSuccess, isError])
     const handleGetDetailUser = async (id, access_token) => {
         const res = await UserService.getDetailUser(id, access_token); // lấy thông tin user từ token và id
-        dispatch(updateUser({ ...res?.response.data, access_token: access_token })) 
+        dispatch(updateUser({ ...res?.response.data, access_token: access_token }))
         // truyền data mà res trả về vào redux
         // thì bên userSlide sẽ nhận được state và action trong đó action.payload là data user
-        console.log("res", res);
     }
     const handleOnChangeEmail = (value) => {
         setEmail(value);

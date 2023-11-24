@@ -13,6 +13,7 @@ const generalRefreshToken = async (payload) => {
     return refreshToken;
 }
 const refreshTokenService = (token) => {
+    console.log('token', token)
     return new Promise((resolve, reject) => {
         try {
             jwt.verify(token, process.env.REFRESH_TOKEN, async (err, user) => {
@@ -22,11 +23,10 @@ const refreshTokenService = (token) => {
                         message: "Không có quyền truy cập"
                     })
                 }
-                const { payload } = user
                 // Cấp lại access token mới
                 const access_token = await generalAccessToken({
-                    id: payload?.id,
-                    isAdmin: payload?.isAdmin
+                    id: user?.id,
+                    isAdmin: user?.isAdmin
                 })
                 resolve({
                     status: 'Ok',

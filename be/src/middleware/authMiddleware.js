@@ -19,8 +19,6 @@ const authMiddleware = (req, res, next) => {
                 status: 'Error'
             })
         }
-        console.log("user", user);
-
     })
 }
 const authUserMiddleware = (req, res, next) => {
@@ -43,7 +41,6 @@ const authUserMiddleware = (req, res, next) => {
                 status: 'Error'
             })
         }
-        console.log("user", user);
 
     })
 }

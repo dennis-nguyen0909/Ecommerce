@@ -14,8 +14,6 @@ const ProductRouter = require('./routes/ProductRouter');
 app.use(cors())
 // Bodyparser dat trước router
 app.use(bodyParser.json());
-
-// 
 app.use(cookieParser())
 
 
