@@ -53,6 +53,12 @@ const loginUser = async (req, res) => {
         }
         //#2 truyền qua service xử lý logic
         const data = await UserService.loginUser(req.body);
+        const { refresh_token, ...newData } = data
+        res.cookie('refresh_token', refresh_token, {
+            HttpOnly: true, // giúp ta chỉ lấy đc cookie qua http thôi 
+            Secure: true, // bảo mật phía client
+
+        })
         return res.status(200).json({
             message: data
         })
@@ -130,7 +136,7 @@ const getDetailUser = async (req, res) => {
         const response = await UserService.getDetailUser(userId);
         return res.status(200).json({
             message: "Ok",
-            data: response
+            response
         })
     } catch (error) {
         return res.status(400).json({
@@ -141,7 +147,8 @@ const getDetailUser = async (req, res) => {
 
 const refreshToken = async (req, res) => {
     try {
-        const token = req.headers.token.split(' ')[1];
+        // const token = req.headers.token.split(' ')[1];
+        const token = req.cookie.refresh_token
         if (!token) {
             return res.status(400).json({
                 status: 'Lỗi',

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { WrapperContainerLeft, WrapperContainerRight, WrapperTextLight } from './style'
 import { InputForm } from '../../component/InputForm/InputForm'
 import { ButtonComponent } from '../../component/ButtonComponent/ButtonComponent'
@@ -10,7 +10,7 @@ import { useMutation } from '@tanstack/react-query'
 import * as UserService from '../../services/UserService'
 import { useMutationHook } from '../../hooks/userMutationHook'
 import LoadingComponent from '../../component/LoadingComponent/LoadingComponent'
-
+import * as message from '../../component/MessageComponent/MessageComponent'
 export const SignUpPage = () => {
     const [isShowPassword, setShowPassword] = useState(false);
     const [isShowConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -22,8 +22,16 @@ export const SignUpPage = () => {
     const mutation = useMutationHook(
         data => UserService.signUp(data)
     )
-    const { data, isPending } = mutation
-    console.log("mutation", mutation);
+
+    const { data, isPending, isSuccess, isError } = mutation
+    useEffect(() => {
+        if (isSuccess) {
+            message.success("Đăng ký thành công !")
+            handleNavigateLogin()
+        } else if (isError) {
+            message.error("Đăng ký thất bại !")
+        }
+    }, [isError, isSuccess])
 
     const handleNavigateLogin = () => {
         navigate('/login')

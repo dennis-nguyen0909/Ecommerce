@@ -4,6 +4,7 @@ dotenv.config();
 const mongoose = require('mongoose');
 const app = express();
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const port = process.env.PORT_LOCAL || 8888
 const UserRouter = require('./routes/UserRouter');
@@ -13,6 +14,9 @@ const ProductRouter = require('./routes/ProductRouter');
 app.use(cors())
 // Bodyparser dat trước router
 app.use(bodyParser.json());
+
+// 
+app.use(cookieParser())
 
 
 UserRouter(app);

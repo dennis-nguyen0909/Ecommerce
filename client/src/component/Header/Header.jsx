@@ -8,12 +8,16 @@ import { ButtonInputSearch } from '../ButtonInputSearch/ButtonInputSearch'
 
 import logo from '../../assets/images/logo.jpeg'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 // import slider4 from '../../assets/images/slider4.jpg'
 export const Header = () => {
     const navigate = useNavigate()
+    const user = useSelector((state) => state.user)
+    console.log("user", user);
     const handleNavigateLogin = () => {
         navigate('/login');
     }
+
     return (
         <div style={{ width: '100%' }}>
             <WrapperHeader>
@@ -35,12 +39,18 @@ export const Header = () => {
                 <Col span={6} style={{ display: 'flex', gap: '54px', alignItems: 'center' }}>
                     <WrapperAccount >
                         <UserOutlined style={{ fontSize: "30px" }} />
-                        <div onClick={handleNavigateLogin} style={{ cursor: 'pointer' }}>
-                            <WrapperTextSmall style={{ fontSize: "12px" }}>Đăng nhập / Đăng ký</WrapperTextSmall>
-                            <div>
-                                <WrapperTextSmall style={{ fontSize: "12px" }}>Tài khoản <DownOutlined /></WrapperTextSmall>
+                        {user?.name ?
+                            <>
+                                <div>Xin chào</div>
+                                <div>{user.name}</div>
+                            </>
+                            : <div onClick={handleNavigateLogin} style={{ cursor: 'pointer' }}>
+                                <WrapperTextSmall style={{ fontSize: "12px" }}>Đăng nhập / Đăng ký</WrapperTextSmall>
+                                <div>
+                                    <WrapperTextSmall style={{ fontSize: "12px" }}>Tài khoản <DownOutlined /></WrapperTextSmall>
+                                </div>
                             </div>
-                        </div>
+                        }
                         <div style={{ display: 'flex', justifyContent: "center", alignItems: "center" }}>
                             <Badge count={4} size='small'>
                                 <ShoppingCartOutlined style={{ fontSize: "30px" }} />

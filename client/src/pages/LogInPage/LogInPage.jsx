@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { WrapperContainerLeft, WrapperContainerRight, WrapperTextLight } from './style'
 import { InputForm } from '../../component/InputForm/InputForm'
 import { ButtonComponent } from '../../component/ButtonComponent/ButtonComponent'
@@ -9,19 +9,46 @@ import { useNavigate } from 'react-router-dom'
 import { useMutationHook } from '../../hooks/userMutationHook'
 import * as UserService from '../../services/UserService'
 import LoadingComponent from '../../component/LoadingComponent/LoadingComponent'
-
+import * as message from '../../component/MessageComponent/MessageComponent'
+import { jwtDecode } from "jwt-decode";
+import { useDispatch, useSelector } from 'react-redux'
+import { updateUser } from '../../redux/slides/userSlide'
 export const LogInPage = () => {
     const [isShowPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const dispatch = useDispatch();
     const handleNavigateSignUp = () => {
         navigate('/sign-up')
     }
     const mutation = useMutationHook(
         data => UserService.loginUser(data)
     )
-    const { data, isPending } = mutation
+    const { data, isPending, isSuccess, isError } = mutation
+    useEffect(() => {
+        if (isSuccess) {
+            message.success("Đăng nhập thành công !")
+            navigate('/')
+            const access_token = data.message?.access_token
+            localStorage.setItem('access_token', access_token)
+            if (access_token) {
+                const decoded = jwtDecode(access_token) // jwt sẽ giải mã token và trả về payload gồm dữ liệu đã giải
+                if (decoded?.id) {
+                    handleGetDetailUser(decoded?.id, access_token)
+                }
+            }
+        } else if (isError) {
+            message.error("Đăng nhập thất bại !")
+        }
+    }, [isSuccess, isError])
+    const handleGetDetailUser = async (id, access_token) => {
+        const res = await UserService.getDetailUser(id, access_token); // lấy thông tin user từ token và id
+        dispatch(updateUser({ ...res?.response.data, access_token: access_token })) 
+        // truyền data mà res trả về vào redux
+        // thì bên userSlide sẽ nhận được state và action trong đó action.payload là data user
+        console.log("res", res);
+    }
     const handleOnChangeEmail = (value) => {
         setEmail(value);
     }

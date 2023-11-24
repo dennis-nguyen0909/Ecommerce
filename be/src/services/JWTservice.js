@@ -2,13 +2,13 @@ const jwt = require('jsonwebtoken')
 require("dotenv").config();
 const generalAccessToken = async (payload) => {
     const accessToken = jwt.sign({
-        payload
+        ...payload
     }, process.env.ACCESS_TOKEN, { expiresIn: '20s' })
     return accessToken;
 }
 const generalRefreshToken = async (payload) => {
     const refreshToken = jwt.sign({
-        payload
+        ...payload
     }, process.env.REFRESH_TOKEN, { expiresIn: '365d' })
     return refreshToken;
 }
@@ -31,7 +31,7 @@ const refreshTokenService = (token) => {
                 resolve({
                     status: 'Ok',
                     message: " Success!!",
-                    data: user
+                    access_token
                 })
             })
         } catch (error) {

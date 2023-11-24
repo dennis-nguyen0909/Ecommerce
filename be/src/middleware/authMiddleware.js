@@ -10,8 +10,7 @@ const authMiddleware = (req, res, next) => {
                 status: 'Error'
             })
         }
-        const { payload } = user
-        if (payload?.isAdmin) {
+        if (user?.isAdmin) {
             // nếu có quyền là admin cho đi tiếp
             next()
         } else {
@@ -35,8 +34,7 @@ const authUserMiddleware = (req, res, next) => {
                 status: 'Error'
             })
         }
-        const { payload } = user
-        if (payload?.isAdmin || payload?.id === userId) {
+        if (user?.isAdmin || user?.id === userId) {
             // nếu có quyền là admin cho đi tiếp
             next()
         } else {

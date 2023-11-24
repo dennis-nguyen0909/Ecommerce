@@ -151,7 +151,7 @@ const getDetailUser = (userId) => {
             if (user === null) {
                 resolve({
                     message: "User not defined!!",
-                    status: "OK"
+                    status: "Error"
                 })
             }
             resolve({
