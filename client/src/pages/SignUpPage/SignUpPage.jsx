@@ -5,11 +5,42 @@ import { ButtonComponent } from '../../component/ButtonComponent/ButtonComponent
 import { Image } from 'antd'
 import logo from '../../assets/images/signup.jpeg'
 import { EyeFilled, EyeInvisibleFilled } from '@ant-design/icons'
+import { useNavigate } from 'react-router-dom'
+import { useMutation } from '@tanstack/react-query'
+import * as UserService from '../../services/UserService'
+import { useMutationHook } from '../../hooks/userMutationHook'
+import LoadingComponent from '../../component/LoadingComponent/LoadingComponent'
 
 export const SignUpPage = () => {
     const [isShowPassword, setShowPassword] = useState(false);
-    const onChange = () => {
+    const [isShowConfirmPassword, setShowConfirmPassword] = useState(false);
+    const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
+    const mutation = useMutationHook(
+        data => UserService.signUp(data)
+    )
+    const { data, isPending } = mutation
+    console.log("mutation", mutation);
+
+    const handleNavigateLogin = () => {
+        navigate('/login')
+    }
+    const handleOnChangeEmail = (value) => {
+        setEmail(value);
+    }
+    const handleOnChangePassword = (value) => {
+        setPassword(value);
+    }
+    const handleOnChangeConfirmPassword = (value) => {
+        setConfirmPassword(value);
+    }
+    const handleSignUp = () => {
+        mutation.mutate({
+            email, password, confirmPassword
+        })
     }
     return (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "#ccc", height: '100vh' }}>
@@ -18,46 +49,56 @@ export const SignUpPage = () => {
                     <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <h1>Đăng Ký</h1>
                     </div>
-                    <InputForm label="Tài khoản" placeholder="abc@gmail.com" />
+                    <InputForm label="Tài khoản" placeholder="abc@gmail.com" value={email} onChange={handleOnChangeEmail} />
                     <div style={{ position: 'relative' }}>
-                        <span style={{
-                            zIndex: 10,
-                            position: 'absolute',
-                            top: '4px',
-                            right: '8px'
-                        }}>
+                        <span
+                            onClick={() => setShowPassword(!isShowPassword)}
+                            style={{
+                                zIndex: 10,
+                                position: 'absolute',
+                                top: '4px',
+                                right: '8px'
+                            }}>
                             {isShowPassword ? (<EyeFilled />) : (<EyeInvisibleFilled />)}
                         </span>
-                        <InputForm label="Mật khẩu" placeholder="*********" type={isShowPassword ? "text" : "password"} onChange={onChange} />
+                        <InputForm label="Mật khẩu" placeholder="*********" type={isShowPassword ? "text" : "password"} value={password} onChange={handleOnChangePassword} />
                     </div>
                     <div style={{ position: 'relative' }}>
-                        <span style={{
-                            zIndex: 10,
-                            position: 'absolute',
-                            top: '4px',
-                            right: '8px'
-                        }}>
-                            {isShowPassword ? (<EyeFilled />) : (<EyeInvisibleFilled />)}
+                        <span
+                            onClick={() => setShowConfirmPassword(!isShowConfirmPassword)}
+                            style={{
+                                zIndex: 10,
+                                position: 'absolute',
+                                top: '4px',
+                                right: '8px'
+                            }}>
+                            {isShowConfirmPassword ? (<EyeFilled />) : (<EyeInvisibleFilled />)}
                         </span>
-                        <InputForm label="Nhập lại mật khẩu" placeholder="*********" type={isShowPassword ? "text" : "password"} onChange={onChange} />
+                        <InputForm label="Nhập lại mật khẩu" placeholder="*********" type={isShowConfirmPassword ? "text" : "password"} value={confirmPassword} onChange={handleOnChangeConfirmPassword} />
                     </div>
-                    <ButtonComponent
-                        bordered={false}
-                        size={'40'}
-                        styleButton={{
-                            backgroundColor: "rgb(240,213,219)",
-                            height: '48px',
-                            width: '100%',
-                            border: 'none',
-                            borderRadius: "12px",
-                            margin: "20px 0"
-                        }}
-                        textButton={"Đăng Ký"}
-                        styleTextButton={{ color: "#fff", fontSize: '15px', fontWeight: 700 }}
-                    >
-                    </ButtonComponent>
+                    {data?.status === "Error" && <span style={{ color: 'red' }}>{data?.message}</span>}
+                    {data?.message.status === "Error" && <span style={{ color: "red" }}>{data?.message.message}</span>}
+                    <LoadingComponent isLoading={isPending}>
+                        <ButtonComponent
+                            disabled={!email.length || !password.length || !confirmPassword.length}
+                            onClick={handleSignUp}
+
+                            size={'40'}
+                            styleButton={{
+                                backgroundColor: "rgb(240,213,219)",
+                                height: '48px',
+                                width: '100%',
+                                border: 'none',
+                                borderRadius: "12px",
+                                margin: "20px 0"
+                            }}
+                            textButton={"Đăng Ký"}
+                            styleTextButton={{ color: "#fff", fontSize: '15px', fontWeight: 700 }}
+                        >
+                        </ButtonComponent>
+                    </LoadingComponent>
                     <p>Bạn đã có tài khoản ?
-                        <WrapperTextLight>Đăng nhập</WrapperTextLight>
+                        <WrapperTextLight style={{ cursor: 'pointer' }} onClick={handleNavigateLogin}>Đăng nhập</WrapperTextLight>
                     </p>
                 </WrapperContainerLeft>
                 <WrapperContainerRight>

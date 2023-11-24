@@ -85,20 +85,12 @@ const getDetailProduct = async (req, res) => {
 }
 const getAllProduct = async (req, res) => {
     try {
-        // http://localhost:8080/api/product/get-all-product?page=1&limit=2&sort=asc
-        // lấy từ query
-        const { page, limit, sort, filter } = req.query;
-        const response = await ProductService.getAllProduct(Number(page) || 0, Number(limit) || 8, sort, filter);
-        console.log(response)
-        return res.status(200).json({
-            status: "Ok",
-            message: "Success",
-            data: response
-        })
-    } catch (error) {
+        const { limit, page, sort, filter } = req.query
+        const response = await ProductService.getAllProduct(Number(limit) || null, Number(page) || 0, sort, filter)
+        return res.status(200).json(response)
+    } catch (e) {
         return res.status(404).json({
-            status: "Error",
-            message: "Lỗi phía controllers"
+            message: e
         })
     }
 }

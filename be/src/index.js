@@ -4,10 +4,13 @@ dotenv.config();
 const mongoose = require('mongoose');
 const app = express();
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const port = process.env.PORT_LOCAL || 8888
 const UserRouter = require('./routes/UserRouter');
 const ProductRouter = require('./routes/ProductRouter');
 
+// Bảo mật trình duyệt web tránh truy cập domain khác nhau sẽ bị lỗi cors
+app.use(cors())
 // Bodyparser dat trước router
 app.use(bodyParser.json());
 

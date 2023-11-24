@@ -20,4 +20,5 @@ export const WrapperTextLight = styled.span`
     color:#ccc;
     font-size:14px;
     // font-weight:bold;
+    cursor:pointer;
 `

@@ -12,7 +12,7 @@ const createUser = (data) => {
             })
             if (checkUserExist !== null) {
                 resolve({
-                    status: 'Ok',
+                    status: 'Error',
                     message: "User is exist!!",
                 })
             }
@@ -48,7 +48,7 @@ const loginUser = (userLogin) => {
             })
             if (checkUserExist === null) {
                 resolve({
-                    status: 'Ok',
+                    status: 'Error',
                     message: "User is not undefined !!",
                 })
             }
@@ -56,7 +56,7 @@ const loginUser = (userLogin) => {
             //#3 giải pass đã bcrypt
             if (!comparePassword) {
                 resolve({
-                    status: 'Ok',
+                    status: 'Error',
                     message: "Password or User is incorrect !!",
                 })
             }

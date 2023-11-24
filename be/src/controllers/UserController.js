@@ -3,10 +3,10 @@ const JWTservice = require('../services/JWTservice')
 const createUser = async (req, res) => {
     try {
         //#1. Lấy ra dữ liệu & validation
-        const { email, name, password, confirmPassword, phone } = req.body;
+        const { email, password, confirmPassword } = req.body;
         const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         const isCheckEmail = regexEmail.test(email);
-        if (!email || !name || !password || !confirmPassword || !phone) {
+        if (!email || !password || !confirmPassword) {
             return res.status(200).json({
                 status: 'Error',
                 message: "The input is required"
@@ -40,7 +40,7 @@ const loginUser = async (req, res) => {
         const { email, name, password, confirmPassword, phone } = req.body;
         const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         const isCheckEmail = regexEmail.test(email);
-        if (!email || !name || !password || !confirmPassword || !phone) {
+        if (!email || !password) {
             return res.status(200).json({
                 status: 'Error',
                 message: "The input is required"
@@ -49,11 +49,6 @@ const loginUser = async (req, res) => {
             return res.status(200).json({
                 status: 'Error',
                 message: "The email is required ....@gmail.com"
-            })
-        } else if (password !== confirmPassword) {
-            return res.status(200).json({
-                status: 'Error',
-                message: "Password don't match!"
             })
         }
         //#2 truyền qua service xử lý logic

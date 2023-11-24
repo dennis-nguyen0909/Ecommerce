@@ -7,8 +7,13 @@ import { WrapperAccount } from './style'
 import { ButtonInputSearch } from '../ButtonInputSearch/ButtonInputSearch'
 
 import logo from '../../assets/images/logo.jpeg'
+import { useNavigate } from 'react-router-dom'
 // import slider4 from '../../assets/images/slider4.jpg'
 export const Header = () => {
+    const navigate = useNavigate()
+    const handleNavigateLogin = () => {
+        navigate('/login');
+    }
     return (
         <div style={{ width: '100%' }}>
             <WrapperHeader>
@@ -21,7 +26,6 @@ export const Header = () => {
                 <Col span={13} >
                     <ButtonInputSearch
                         placeholder="Tìm kiếm sản phẩm ...."
-                        bordered={false}
                         textButton="Tìm kiếm"
                         size="large"
 
@@ -31,7 +35,7 @@ export const Header = () => {
                 <Col span={6} style={{ display: 'flex', gap: '54px', alignItems: 'center' }}>
                     <WrapperAccount >
                         <UserOutlined style={{ fontSize: "30px" }} />
-                        <div>
+                        <div onClick={handleNavigateLogin} style={{ cursor: 'pointer' }}>
                             <WrapperTextSmall style={{ fontSize: "12px" }}>Đăng nhập / Đăng ký</WrapperTextSmall>
                             <div>
                                 <WrapperTextSmall style={{ fontSize: "12px" }}>Tài khoản <DownOutlined /></WrapperTextSmall>
