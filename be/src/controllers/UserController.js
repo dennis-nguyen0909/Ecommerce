@@ -43,12 +43,14 @@ const loginUser = async (req, res) => {
         if (!email || !password) {
             return res.status(200).json({
                 status: 'Error',
-                message: "The input is required"
+                message: "The input is required",
+                EC: 0
             })
         } else if (!isCheckEmail) {
             return res.status(200).json({
                 status: 'Error',
-                message: "The email is required ....@gmail.com"
+                message: "The email is required ....@gmail.com",
+                EC: 0
             })
         }
         //#2 truyền qua service xử lý logic
@@ -62,12 +64,14 @@ const loginUser = async (req, res) => {
 
         })
         return res.status(200).json({
+
             message: data
         })
     } catch (error) {
         return res.status(404).json({
             status: 'err',
-            message: error
+            message: error,
+            EC: 0
         })
     }
 }

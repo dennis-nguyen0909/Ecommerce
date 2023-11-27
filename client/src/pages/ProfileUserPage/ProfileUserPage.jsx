@@ -66,7 +66,7 @@ export const ProfileUserPage = () => {
         if (isSuccess) {
             message.success("Cập nhật thành công !")
             handleGetDetailUser(user?.id, user?.access_token)
-           
+
         } else if (isError) {
             message.error("Cập nhật thất bại !")
         }
@@ -140,7 +140,7 @@ export const ProfileUserPage = () => {
                         />
                         <InputForm
                             label={'Role:'}
-                            placeholder={user.isAdmin ? "User" : "Admin"}
+                            placeholder={user.isAdmin === false ? "User" : "Admin"}
                             value={isAdmin} onChange={handleOnChangeAdmin}
                         />
                         {/* <WrapperLabelForm>

@@ -14,13 +14,14 @@ import { resetUser } from '../../redux/slides/userSlide'
 import LoadingComponent from '../LoadingComponent/LoadingComponent'
 
 // import slider4 from '../../assets/images/slider4.jpg'
-export const Header = () => {
+export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
     const dispatch = useDispatch()
     const user = useSelector((state) => state.user)
     const [userName, setUserName] = useState('')
     const [userAvatar, setUserAvatar] = useState('')
+    console.log('email', user.email)
     const handleNavigateLogin = () => {
         navigate('/login');
     }
@@ -33,17 +34,23 @@ export const Header = () => {
     const handleLogout = async () => {
         setLoading(true);
         await UserService.logoutUser();
-        // localStorage.removeItem("access_token")
+        localStorage.removeItem("access_token")
         dispatch(resetUser())
         setLoading(false)
     }
     const handleNavigateProfile = () => {
         navigate('/profile-user')
     }
+    const handleNavigateAdmin = () => {
+        navigate('/system/admin')
+    }
     const content = (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
             <WrapperLogout onClick={handleLogout}>Đăng xuất</WrapperLogout>
             <WrapperLogout onClick={handleNavigateProfile}>Thông tin người dùng</WrapperLogout>
+            {user?.isAdmin && (
+                <WrapperLogout onClick={handleNavigateAdmin}>Quản lý hệ thống</WrapperLogout>
+            )}
         </div>
     );
 
@@ -57,13 +64,16 @@ export const Header = () => {
                     </WrapperText>
                 </Col>
                 <Col span={13} >
-                    <ButtonInputSearch
-                        placeholder="Tìm kiếm sản phẩm ...."
-                        textButton="Tìm kiếm"
-                        size="large"
+                    {!isHiddenSearch && (
 
-                    // onSearch={onSearch}
-                    />
+                        <ButtonInputSearch
+                            placeholder="Tìm kiếm sản phẩm ...."
+                            textButton="Tìm kiếm"
+                            size="large"
+
+                        // onSearch={onSearch}
+                        />
+                    )}
                 </Col>
                 <Col span={6} style={{ display: 'flex', gap: '54px', alignItems: 'center' }}>
                     <LoadingComponent isLoading={loading}>
@@ -87,10 +97,14 @@ export const Header = () => {
                                 </div>
                             }
                             <div style={{ display: 'flex', justifyContent: "center", alignItems: "center" }}>
-                                <Badge count={4} size='small'>
-                                    <ShoppingCartOutlined style={{ fontSize: "30px" }} />
-                                </Badge>
-                                <WrapperTextSmall>Giỏ Hàng</WrapperTextSmall>
+                                {!isHiddenCart && (
+                                    <>
+                                        <Badge count={4} size='small'>
+                                            <ShoppingCartOutlined style={{ fontSize: "30px" }} />
+                                        </Badge>
+                                        <WrapperTextSmall>Giỏ Hàng</WrapperTextSmall>
+                                    </>
+                                )}
                             </div>
                         </WrapperAccount>
                     </LoadingComponent>

@@ -32,27 +32,28 @@ export const LogInPage = () => {
             navigate('/')
         }
     }, [user])
+    console.log("message", data?.message)
     useEffect(() => {
         if (isSuccess) {
-            message.success("Đăng nhập thành công !")
             const access_token = data.message?.access_token
-            localStorage.setItem('access_token', JSON.stringify(access_token))
+            localStorage.setItem('access_token', access_token)
             if (access_token) {
                 const decoded = jwtDecode(access_token) // jwt sẽ giải mã token và trả về payload gồm dữ liệu đã giải
                 if (decoded?.id) {
                     handleGetDetailUser(decoded?.id, access_token)
                 }
             }
+            message.success("Đăng nhập thành công !")
             navigate('/')
-        } else if (isError) {
-            message.error("Đăng nhập thất bại !")
         }
-    }, [isSuccess, isError])
+    }, [isSuccess])
     const handleGetDetailUser = async (id, access_token) => {
         const res = await UserService.getDetailUser(id, access_token); // lấy thông tin user từ token và id
         dispatch(updateUser({ ...res?.response.data, access_token: access_token }))
         // truyền data mà res trả về vào redux
         // thì bên userSlide sẽ nhận được state và action trong đó action.payload là data user
+        localStorage.setItem('access_token', JSON.stringify(access_token));
+        localStorage.setItem('user', JSON.stringify(res?.response.data));
     }
     const handleOnChangeEmail = (value) => {
         setEmail(value);

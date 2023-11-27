@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { routes } from "./routes";
 import { Default } from "./component/Default/Default";
@@ -9,15 +9,22 @@ import { updateUser } from './redux/slides/userSlide'
 import { isJsonString } from "./untils";
 import * as UserService from './services/UserService'
 import axios from "axios";
+import { NotFoundPage } from "./pages/NotFoundPage/NotFoundPage";
+import LoadingComponent from "./component/LoadingComponent/LoadingComponent";
+import { isPending } from "@reduxjs/toolkit";
 function App() {
 
   const dispatch = useDispatch()
+  const [isLoading, setIsLoading] = useState(false)
+  const user = useSelector((state) => state.user)
+  console.log("admin", user.email, user.isAdmin)
   useEffect(() => {
+    setIsLoading(true)
     const { decoded, storage } = handleDecoded()
     if (decoded?.id) {
       handleGetDetailUser(decoded?.id, storage)
     }
-
+    setIsLoading(false)
   }, [])
   const handleGetDetailUser = async (id, access_token) => {
     const res = await UserService.getDetailUser(id, access_token); // lấy thông tin user từ token và id
@@ -50,21 +57,28 @@ function App() {
   })
   return (
     <div>
-      <Router>
-        <Routes>
-          {routes.map((item) => {
-            const Page = item.page
-            const Layout = item.isShowHeader ? Default : Fragment
-            return (
-              <Route key={item.path} path={item.path} element={
-                <Layout>
-                  <Page />
-                </Layout>
-              } />
-            )
-          })}
-        </Routes>
-      </Router>
+      <LoadingComponent isLoading={isLoading}>
+        <Router>
+          <Routes>
+            {routes.map((route) => {
+              const Page = route.page
+              const Layout = route.isShowHeader ? Default : Fragment
+              // const checkAuth = !route.isPrivate || user.isAdmin
+              return (
+                <Route path={route.path} key={route.path} element={
+                  <Layout>
+                    {route.isPrivate && !user.isAdmin ? (
+                      <NotFoundPage />
+                    ) : (
+                      <Page />
+                    )}
+                  </Layout>
+                } />
+              )
+            })}
+          </Routes>
+        </Router>
+      </LoadingComponent>
     </div>
   )
 }

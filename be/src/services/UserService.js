@@ -40,7 +40,7 @@ const createUser = (data) => {
 const loginUser = (userLogin) => {
     return new Promise(async (resolve, reject) => {
         //#1 Lấy data được truyền từ controller
-        const { email, name, password, confirmPassword, phone } = userLogin;
+        const { email, password } = userLogin;
         try {
             //#2 Kiểm tra nếu user đã tồn tại trong db thì cho login
             const checkUserExist = await User.findOne({
@@ -50,14 +50,16 @@ const loginUser = (userLogin) => {
                 resolve({
                     status: 'Error',
                     message: "User is not undefined !!",
+                    EC: 0
                 })
             }
             const comparePassword = bcrypt.compareSync(password, checkUserExist.password);
             //#3 giải pass đã bcrypt
             if (!comparePassword) {
-                resolve({
+                return res.status(200).json({
                     status: 'Error',
-                    message: "Password or User is incorrect !!",
+                    message: "user or password incorrect",
+                    EC: 0
                 })
             }
             //#4 tạo access_token và trả về
@@ -73,6 +75,7 @@ const loginUser = (userLogin) => {
             resolve({
                 status: 'Ok',
                 message: "Login Success!!",
+                EC: 1,
                 access_token,
                 refresh_token
             })

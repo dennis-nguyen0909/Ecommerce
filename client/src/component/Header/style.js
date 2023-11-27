@@ -3,7 +3,7 @@ import { Image, Row } from 'antd'
 import styled from 'styled-components'
 export const WrapperHeader = styled(Row)`
     border-bottom:1px solid #ccc;
-    padding: 25px 120px;
+    padding: 15px 120px;
     // background-color: rgb(128, 128, 128);
     align-item:center;
     gap:16px;
