@@ -12,6 +12,8 @@ const ProductRouter = require('./routes/ProductRouter');
 
 // Bảo mật trình duyệt web tránh truy cập domain khác nhau sẽ bị lỗi cors
 app.use(cors())
+app.use(express.json({ limit: '50mb' }))
+app.use(express.urlencoded({ limit: '50mb' }))
 // Bodyparser dat trước router
 app.use(bodyParser.json());
 app.use(cookieParser())

@@ -1,7 +1,8 @@
 import React from 'react'
+import { WrapperDivText } from './style'
 
 export const TypeProduct = ({ name }) => {
     return (
-        <div style={{ padding: '0 120px' }}>{name}</div>
+        <WrapperDivText>{name}</WrapperDivText>
     )
 }

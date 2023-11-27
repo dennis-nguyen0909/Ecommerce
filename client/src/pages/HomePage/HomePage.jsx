@@ -7,11 +7,20 @@ import slider2 from '../../assets/images/slider2.jpg'
 import slider3 from '../../assets/images/slider3.jpg'
 import slider4 from '../../assets/images/slider4.jpg'
 import { CardComponent } from '../../component/CardComponent/CardComponent'
+import * as ProductService from '../../services/ProductService'
+import { useQueries, useQuery } from '@tanstack/react-query'
 export const HomePage = () => {
-    const arr = ['Nike', 'Adidas', 'MLB', 'Vans']
+    const arr = ['About Us', 'Cửa Hàng', 'Giảm giá', 'Liên hệ', 'Chăm sóc khách hàng']
+    const fetchProduct = async () => {
+        const res = await ProductService.getAllProduct();
+        return res;
+    }
+    const query = useQuery({ queryKey: ['products'], queryFn: fetchProduct })
+    const products = query.data
+
     return (
         <div>
-            <div style={{ width: '1270px', margin: '0 auto' }}>
+            <div style={{ padding: '0 120px', margin: '10px 0' }}>
                 <WrapperTypeProduct>
                     {arr.map((item) => {
                         return (
@@ -22,19 +31,27 @@ export const HomePage = () => {
             </div>
             <div className='body' style={{ width: '100%', backgroundColor: "#efefef" }}>
 
-                <div id="container" style={{ padding: '0 120px', height: 'fit-content' }}>
+                <div id="container" style={{ height: 'fit-content' }}>
                     <SliderComponent arrImages={[slider1, slider2, slider3, slider4]} />
                     <WrapperProduct>
-                        <CardComponent />
-                        <CardComponent />
-                        <CardComponent />
-                        <CardComponent />
-                        <CardComponent />
-                        <CardComponent />
-                        <CardComponent />
-                        <CardComponent />
-                        <CardComponent />
-                        <CardComponent />
+                        {products && products.data ? (
+                            products.data.map((product) => (
+                                <CardComponent
+                                    key={product._id}
+                                    countInStock={product.countInStock}
+                                    description={product.description}
+                                    image={product.image}
+                                    name={product.name}
+                                    price={product.price}
+                                    rating={product.rating}
+                                    type={product.type}
+                                    discount={product.discount}
+                                    selled={product.selled}
+                                />
+                            ))
+                        ) : (
+                            <p>No products available</p>
+                        )}
                     </WrapperProduct>
                     <div style={{ width: '100%', display: 'flex', justifyContent: 'center', margin: '15px 0' }}>
                         <WrapperButtonMore type={'outline'} textButton={'Xem thêm'} styleButton={{

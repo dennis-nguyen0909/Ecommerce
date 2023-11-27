@@ -53,11 +53,12 @@ const loginUser = async (req, res) => {
         }
         //#2 truyền qua service xử lý logic
         const data = await UserService.loginUser(req.body);
+        console.log(data)
         const { refresh_token, ...newData } = data
         res.cookie('refresh_token', refresh_token, {
             httpOnly: true, // giúp ta chỉ lấy đc cookie qua http thôi 
             secure: false, // bảo mật phía client
-            samesite: 'strict'
+            sameSite: 'strict'
 
         })
         return res.status(200).json({
@@ -65,6 +66,7 @@ const loginUser = async (req, res) => {
         })
     } catch (error) {
         return res.status(404).json({
+            status: 'err',
             message: error
         })
     }
@@ -74,6 +76,7 @@ const updateUser = async (req, res) => {
 
         const userId = req.params.id;
         const data = req.body;
+        console.log("data", data)
         if (!userId) {
             return res.status(200).json({
                 status: "Error",
@@ -93,7 +96,6 @@ const updateUser = async (req, res) => {
 }
 const deleteUser = async (req, res) => {
     try {
-
         const userId = req.params.id;
         if (!userId) {
             return res.status(200).json({
@@ -167,4 +169,19 @@ const refreshToken = async (req, res) => {
         })
     }
 }
-module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser, refreshToken }
+
+const logoutUser = async (req, res) => {
+    try {
+        res.clearCookie('refresh_token');
+        return res.status(200).json({
+            status: 'Ok',
+            message: "Logout User Successfully!"
+        })
+    } catch (error) {
+        return res.status(404).json({
+            status: 'err',
+            message: error
+        })
+    }
+}
+module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser, refreshToken, logoutUser }

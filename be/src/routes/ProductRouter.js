@@ -8,6 +8,7 @@ const ProductRouter = (app) => {
     router.delete('/delete/:id', ProductController.deleteProduct);
     router.get('/details/:id', authMiddleware, ProductController.getDetailProduct);
     router.get('/get-all-product', ProductController.getAllProduct);
+    router.get('/get-all-product2', ProductController.getAllProduct2);
 
     return app.use('/api/product', router);
 }

@@ -14,6 +14,7 @@ import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from 'react-redux'
 import { updateUser } from '../../redux/slides/userSlide'
 export const LogInPage = () => {
+    const user = useSelector(state => state.user)
     const [isShowPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
@@ -27,9 +28,13 @@ export const LogInPage = () => {
     )
     const { data, isPending, isSuccess, isError } = mutation
     useEffect(() => {
+        if (user?.access_token) {
+            navigate('/')
+        }
+    }, [user])
+    useEffect(() => {
         if (isSuccess) {
             message.success("Đăng nhập thành công !")
-            navigate('/')
             const access_token = data.message?.access_token
             localStorage.setItem('access_token', JSON.stringify(access_token))
             if (access_token) {
@@ -38,6 +43,7 @@ export const LogInPage = () => {
                     handleGetDetailUser(decoded?.id, access_token)
                 }
             }
+            navigate('/')
         } else if (isError) {
             message.error("Đăng nhập thất bại !")
         }
@@ -55,6 +61,8 @@ export const LogInPage = () => {
         setPassword(value);
     }
     const handleLogin = (e) => {
+        console.log("email", email);
+        console.log("email", password);
         mutation.mutate({
             email, password
         })

@@ -145,7 +145,19 @@ const getAllProduct = (page, limit, sort, filter) => {
         }
     })
 }
-
+const getAllProduct2 = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const product = await Product.find();
+            resolve({
+                status: "Get product ok",
+                data: product
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
 // const getAllProduct = (limit, page, sort, filter) => {
 //     return new Promise(async (resolve, reject) => {
 //         try {
@@ -195,5 +207,5 @@ const getAllProduct = (page, limit, sort, filter) => {
 //     })
 // }
 module.exports = {
-    createProduct, updateProduct, deleteProduct, getDetailProduct, getAllProduct
+    createProduct, updateProduct, deleteProduct, getDetailProduct, getAllProduct, getAllProduct2
 }  
