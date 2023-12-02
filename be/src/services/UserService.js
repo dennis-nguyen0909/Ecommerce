@@ -67,11 +67,13 @@ const loginUser = (userLogin) => {
                 id: checkUserExist.id,
                 isAdmin: checkUserExist.isAdmin
             })
+
             //#5 tạo refresh_token để khi access_token hết hạn thì sẽ lấy refresh_token
             const refresh_token = await generalRefreshToken({
                 id: checkUserExist.id,
                 isAdmin: checkUserExist.isAdmin
             })
+
             resolve({
                 status: 'Ok',
                 message: "Login Success!!",

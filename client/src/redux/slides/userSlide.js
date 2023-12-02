@@ -35,7 +35,9 @@ export const userSlide = createSlice({
             state.avatar = '';
             state.access_token = '';
             state.isAdmin = false;
-
+            // return {
+            //     ...initialState
+            // }
         }
     }
 })

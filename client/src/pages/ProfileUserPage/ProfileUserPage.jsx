@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { WrapperContainerProfile, WrapperDivContainer, WrapperLabelForm, WrapperLabelText, WrapperUploadFile } from './style'
 import { InputForm } from '../../component/InputForm/InputForm'
 import { ButtonComponent } from '../../component/ButtonComponent/ButtonComponent'
-import { Button, Col, Image, Row, message } from 'antd'
+import { Button, Col, Form, Image, Input, Row, message } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutationHook } from '../../hooks/userMutationHook'
 import * as UserService from '../../services/UserService'
@@ -16,6 +16,8 @@ import { UploadOutlined } from '@ant-design/icons';
 import { getBase64 } from '../../untils'
 import { UserOutlined } from '@ant-design/icons';
 import avatarDefault from '../../assets/images/avatar.jpeg'
+import axios from 'axios'
+
 export const ProfileUserPage = () => {
     const user = useSelector((state) => state.user)
     const [name, setName] = useState('')
@@ -25,6 +27,27 @@ export const ProfileUserPage = () => {
     const [avatar, setAvatar] = useState('')
     const [isAdmin, setisAdmin] = useState('')
     const dispatch = useDispatch();
+    const postDetail = (pics) => {
+        if (pics.type === "image/png" || pics.type === "image/jpeg") {
+            const data = new FormData();
+            data.append('file', pics);
+            data.append('upload_preset', "chat-app");
+            data.append('cloud_name', "dxtz2g7ga");
+
+            axios.post('https://api.cloudinary.com/v1_1/dxtz2g7ga/image/upload', data)
+                .then(res => res.data)
+                // .then((res) => res.json())
+                .then(data => {
+                    setAvatar(data.url.toString());
+
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
+    }
+
+
     const mutation = useMutationHook(
         (data) => {
             const { id, access_token, ...rests } = data
@@ -62,6 +85,7 @@ export const ProfileUserPage = () => {
         setAvatar(file.preview)
     }
     const { data, isSuccess, isError, isPending } = mutation
+
     useEffect(() => {
         if (isSuccess) {
             message.success("Cập nhật thành công !")
@@ -90,7 +114,7 @@ export const ProfileUserPage = () => {
                 <Col span={10} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                     <div>
                         {avatar ? (
-                            <Image preview={false} src={avatar} style={{
+                            <img preview={false} src={avatar} style={{
                                 height: '250px', width: '250px', objectFit: 'cover', borderRadius: '50%'
                             }} />
                         ) : <Image src={avatarDefault} style={{
@@ -100,9 +124,17 @@ export const ProfileUserPage = () => {
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <WrapperLabelText style={{ color: 'black', fontWeight: 'bold', fontSize: '30px' }}>{user.name}</WrapperLabelText>
                         <WrapperLabelText>{user.email}</WrapperLabelText>
-                        <WrapperUploadFile onChange={handleOnChangeAvatar} maxCount={1}>
+                        {/* <WrapperUploadFile onChange={handleOnChangeAvatar} maxCount={1}>
                             <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                        </WrapperUploadFile>
+                        </WrapperUploadFile> */}
+                        <Form id='pic' >
+                            <label>Upload Picture</label>
+                            <Input type='file'
+                                p={1.5}
+                                accept='image/*'
+                                onChange={(e) => postDetail(e.target.files[0])}
+                            />
+                        </Form>
                         <ButtonComponent
                             size={'40'}
                             onClick={handleUpdate}

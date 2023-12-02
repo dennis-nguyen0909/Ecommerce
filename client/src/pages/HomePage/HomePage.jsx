@@ -29,7 +29,7 @@ export const HomePage = () => {
                     })}
                 </WrapperTypeProduct>
             </div>
-            <div className='body' style={{ width: '100%', backgroundColor: "#efefef" }}>
+            <div className='body' style={{ width: '100%', backgroundColor: "#fff" }}>
 
                 <div id="container" style={{ height: 'fit-content' }}>
                     <SliderComponent arrImages={[slider1, slider2, slider3, slider4]} />

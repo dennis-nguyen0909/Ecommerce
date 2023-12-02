@@ -1,15 +1,20 @@
 import styled from 'styled-components'
 import { Card } from 'antd'
 export const WrapperCardStyle = styled(Card)`
-    width:200px;
+    width:400px;
     & img {
-        width:200px;
-        height:200px;
+        height:400px;
     }
+    & .ant-card{
+        width:400px
+    }
+    // &:hover{
+    //     display:none;
+    // }
 `
-export const StyleNameProduct = styled.div`
+export const StyleNameProduct = styled.h1`
     font-weight:400;
-    font-size:12px;
+    font-size:26px;
     line-height:16px;
     color:rgb(56,56,61);
 `

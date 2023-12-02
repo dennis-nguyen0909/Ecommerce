@@ -55,17 +55,14 @@ const loginUser = async (req, res) => {
         }
         //#2 truyền qua service xử lý logic
         const data = await UserService.loginUser(req.body);
-        console.log(data)
         const { refresh_token, ...newData } = data
         res.cookie('refresh_token', refresh_token, {
             httpOnly: true, // giúp ta chỉ lấy đc cookie qua http thôi 
             secure: false, // bảo mật phía client
-            sameSite: 'strict'
-
+            // sameSite: 'strict'
         })
         return res.status(200).json({
-
-            message: data
+            message: newData
         })
     } catch (error) {
         return res.status(404).json({
@@ -80,7 +77,6 @@ const updateUser = async (req, res) => {
 
         const userId = req.params.id;
         const data = req.body;
-        console.log("data", data)
         if (!userId) {
             return res.status(200).json({
                 status: "Error",
@@ -121,10 +117,7 @@ const deleteUser = async (req, res) => {
 const getAllUser = async (req, res) => {
     try {
         const response = await UserService.getAllUser();
-        return res.status(200).json({
-            message: "Ok",
-            data: response
-        })
+        return res.status(200).json(response)
     } catch (error) {
         return res.status(400).json({
             message: error
@@ -140,6 +133,7 @@ const getDetailUser = async (req, res) => {
                 status: "Error"
             })
         }
+
         const response = await UserService.getDetailUser(userId);
         return res.status(200).json({
             message: "Ok",
@@ -153,8 +147,6 @@ const getDetailUser = async (req, res) => {
 }
 
 const refreshToken = async (req, res) => {
-    console.log("req.cookie.refresh_token", req.cookies.refresh_token);
-
     try {
         // const token = req.headers.token.split(' ')[1];
         const token = req.cookies.refresh_token
@@ -165,6 +157,7 @@ const refreshToken = async (req, res) => {
             })
         }
         const response = await JWTservice.refreshTokenService(token);
+        // localStorage.setItem('access_token', response.access_token)
         return res.status(200).json(response)
     } catch (error) {
         return res.status(400).json({

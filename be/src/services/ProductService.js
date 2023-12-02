@@ -34,18 +34,20 @@ const updateProduct = (id, data) => {
             const checkIdProduct = await Product.findOne({
                 _id: id
             })
+
             if (checkIdProduct === null) {
                 resolve({
                     status: "Error",
                     message: "Id không tồn tại!!"
                 })
             }
-            const updateNewProduct = await Product.findByIdAndUpdate(id, data, { new: true });
+            const updateNewProduct = await Product.findByIdAndUpdate(
+                id, data, { new: true });
             if (updateNewProduct) {
                 resolve({
                     status: 'Ok',
                     message: "Update Product Success!!",
-                    data: updateNewProduct
+                    updateNewProduct
                 })
             }
         } catch (error) {
@@ -89,7 +91,7 @@ const getDetailProduct = (id) => {
             }
             resolve({
                 status: "Ok",
-                message: "Sản phẩm đã tồn tại!!",
+                message: "Đã tìm thấy sản phẩm!!",
                 data: product
             })
         } catch (error) {

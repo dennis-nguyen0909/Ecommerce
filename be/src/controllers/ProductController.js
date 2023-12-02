@@ -2,16 +2,15 @@ const ProductService = require("../services/ProductService")
 const createProduct = async (req, res) => {
     try {
         const { name, image, type, price, countInStock, rating, description } = req.body
-        console.log('red', req.body)
+
         if (!name || !image || !type || !price || !countInStock || !rating) {
             return res.status(404).json({
                 status: 'Error',
                 message: "Vui lòng nhập đầy đủ"
             })
         }
-        console.log('req.body', req.body)
         const response = await ProductService.createProduct(req.body);
-        console.log("res", response);
+
         return res.status(200).json({
             status: 'Ok',
             data: response
@@ -76,7 +75,7 @@ const getDetailProduct = async (req, res) => {
         const response = await ProductService.getDetailProduct(idUser);
         return res.status(200).json({
             status: "Ok",
-            data: response
+            response
         })
     } catch (error) {
         return res.status(404).json({

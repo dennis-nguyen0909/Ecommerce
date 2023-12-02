@@ -10,7 +10,7 @@ import logo from '../../assets/images/logo.jpeg'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import { resetUser } from '../../redux/slides/userSlide'
+import { resetUser, updateUser } from '../../redux/slides/userSlide'
 import LoadingComponent from '../LoadingComponent/LoadingComponent'
 
 // import slider4 from '../../assets/images/slider4.jpg'
@@ -21,7 +21,6 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const user = useSelector((state) => state.user)
     const [userName, setUserName] = useState('')
     const [userAvatar, setUserAvatar] = useState('')
-    console.log('email', user.email)
     const handleNavigateLogin = () => {
         navigate('/login');
     }
@@ -44,6 +43,7 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const handleNavigateAdmin = () => {
         navigate('/system/admin')
     }
+    console.log('user', user.access_token)
     const content = (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
             <WrapperLogout onClick={handleLogout}>Đăng xuất</WrapperLogout>

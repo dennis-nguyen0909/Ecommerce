@@ -1,5 +1,6 @@
-import React from 'react'
 import { Input } from 'antd'
+import React from 'react'
+
 export const InputComponent = ({ size, placeholder, bordered, style, ...rests }) => {
     return (
         <Input
@@ -11,3 +12,4 @@ export const InputComponent = ({ size, placeholder, bordered, style, ...rests })
         />
     )
 }
+

@@ -1,13 +1,15 @@
 const jwt = require('jsonwebtoken')
 require('dotenv').config();
 const authMiddleware = (req, res, next) => {
-    console.log("token", req.headers.token);
+    // console.log("req.headersss", req.headers.cookie.split('=')[1]);
     const token = req.headers.token.split(' ')[1];
-    jwt.verify(token, process.env.ACCESS_TOKEN, function (err, user) {
+    console.log('tokennn', token)
+    jwt.verify(token, process.env.ACCESS_TOKEN, (err, user) => {
         if (err) {
             return res.status(404).json({
-                message: "The authentication",
-                status: 'Error'
+                message: "The authentication/Lỗi verify",
+                status: 'Error',
+                err
             })
         }
         if (user?.isAdmin) {
@@ -19,12 +21,13 @@ const authMiddleware = (req, res, next) => {
                 status: 'Error'
             })
         }
-    })
+    }
+    )
 }
 const authUserMiddleware = (req, res, next) => {
-    console.log("token", req.headers.token);
     const token = req.headers.token.split(' ')[1];
     const userId = req.params.id;
+    console.log('token', token)
     jwt.verify(token, process.env.ACCESS_TOKEN, function (err, user) {
         if (err) {
             return res.status(404).json({

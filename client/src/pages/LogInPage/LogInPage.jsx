@@ -25,20 +25,25 @@ export const LogInPage = () => {
     }
     const mutation = useMutationHook(
         data => UserService.loginUser(data)
+
     )
-    const { data, isPending, isSuccess, isError } = mutation
+    const { data, isPending, isSuccess } = mutation
     useEffect(() => {
         if (user?.access_token) {
             navigate('/')
+
         }
     }, [user])
-    console.log("message", data?.message)
     useEffect(() => {
-        if (isSuccess) {
+        console.log('data', data?.message)
+        if (+data?.message?.EC === 0) {
+            message.error(data?.message?.message)
+            return;
+        } else if (data?.message?.EC === 1) {
             const access_token = data.message?.access_token
-            localStorage.setItem('access_token', access_token)
-            if (access_token) {
-                const decoded = jwtDecode(access_token) // jwt sẽ giải mã token và trả về payload gồm dữ liệu đã giải
+            localStorage.setItem("access_token", data.message?.access_token)
+            if (data.message?.access_token) {
+                const decoded = jwtDecode(data.message?.access_token) // jwt sẽ giải mã token và trả về payload gồm dữ liệu đã giải
                 if (decoded?.id) {
                     handleGetDetailUser(decoded?.id, access_token)
                 }
@@ -62,8 +67,6 @@ export const LogInPage = () => {
         setPassword(value);
     }
     const handleLogin = (e) => {
-        console.log("email", email);
-        console.log("email", password);
         mutation.mutate({
             email, password
         })

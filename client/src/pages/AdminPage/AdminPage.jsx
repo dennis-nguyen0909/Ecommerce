@@ -5,12 +5,11 @@ import { UserOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/ico
 import { Header } from '../../component/Header/Header'
 import { AdminUser } from '../../component/AdminUser/AdminUser';
 import { AdminProduct } from '../../component/AdminProduct/AdminProduct';
-import { render } from 'react-dom';
 export const AdminPage = () => {
     const [keySelected, setKeySelected] = useState('');
     const items = [
         getItem('Quản lý người dùng', 'user', <UserOutlined />),
-        getItem('Quản lý đơn hàng', 'product', <AppstoreOutlined />),
+        getItem('Quản lý sản phẩm', 'product', <AppstoreOutlined />),
         {
             type: 'divider',
         },
@@ -23,7 +22,6 @@ export const AdminPage = () => {
     ];
     const onClick = ({ key }) => {
         setKeySelected(key)
-        console.log(key)
     };
     const renderPage = (key) => {
         switch (key) {

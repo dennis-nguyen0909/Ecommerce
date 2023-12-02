@@ -18,3 +18,9 @@ export const WrapperUploadFile = styled(Upload)`
         align-items:center;
     }
 `
+
+export const WrapperDiv = styled.div`
+    & .ant-btn{
+        display:none;
+    }
+`

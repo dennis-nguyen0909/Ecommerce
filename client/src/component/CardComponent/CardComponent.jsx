@@ -8,10 +8,8 @@ export const CardComponent = (props) => {
     return (
         <WrapperCardStyle
             hoverable
-            headStyle={{ width: "200px", height: "200px" }}
-            style={{
-                width: 300,
-            }}
+            headStyle={{ width: "100px", height: "100px" }}
+
             bodyStyle={{ padding: "10px" }}
             cover={<img alt="example" src={image} />}
         >
