@@ -3,11 +3,11 @@ import styled from "styled-components";
 export const WrapperDivText = styled.div`
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     padding: 0 10px;
     position: relative;
     text-decoration: none;
-
+    color:rgb(128,128,128);
     &::before,
     &::after {
         content: '';
@@ -15,7 +15,7 @@ export const WrapperDivText = styled.div`
         bottom: -2px;
         width: 0;
         height: 1px;
-        background-color: black;
+        background-color: rgb(128,128,128);
         transition: width 0.3s ease;
     }
 

@@ -7,8 +7,8 @@ const UserRouter = (app) => {
     router.post('/login', UserController.loginUser);
     router.put('/update-user/:id', authUserMiddleware, UserController.updateUser);
     router.delete('/delete-user/:id', authMiddleware, UserController.deleteUser);
-    router.get('/getAll', authMiddleware, UserController.getAllUser);
-    router.get('/getAllUser', UserController.getAllUser);
+    // router.get('/getAll', authMiddleware, UserController.getAllUser);
+    router.get('/getAllUser', authMiddleware, UserController.getAllUser);
     router.get('/get-details/:id', authUserMiddleware, UserController.getDetailUser);
     // router.get('/get-details/:id', UserController.getDetailUser);
     router.post('/refresh-token', UserController.refreshToken);

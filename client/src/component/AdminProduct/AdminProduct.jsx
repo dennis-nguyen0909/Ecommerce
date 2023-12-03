@@ -214,8 +214,8 @@ export const AdminProduct = () => {
     const renderAction = () => {
         return (
             <div style={{ cursor: 'pointer', fontSize: '20px', }}>
-                {/* <DeleteOutlined style={{ color: 'red' }} onClick={handleOpenModelDelete} />
-                <EditOutlined style={{ color: 'orange' }} onClick={handleDetailProduct} /> */}
+                <DeleteOutlined style={{ color: 'red' }} onClick={handleOpenModelDelete} />
+                <EditOutlined style={{ color: 'orange' }} onClick={handleDetailProduct} />
             </div>
         )
     }
@@ -347,10 +347,8 @@ export const AdminProduct = () => {
             key: product._id,
         }
     })
-
-
     const fetchGetDetailProduct = async (rowSelected) => {
-        const res = await ProductService.getDetailProduct(rowSelected)
+        const res = await ProductService.getDetailProduct(rowSelected, user?.access_token)
         if (res?.response?.data) {
             setStateProductDetail({
                 name: res.response.data.name,

@@ -47,17 +47,12 @@ export const createUser = async (data) => {
     return res.data;
 }
 export const getAllUser = async (access_token) => {
-    const res = await axios.get(`http://localhost:3000/api/user/getAll`, {
+    const res = await axiosJWT.get(`http://localhost:3000/api/user/getAllUser`, {
         headers: {
             token: `Bearer ${access_token}`
         }
     });
-    return res.data;
-}
-
-export const getAllUser2 = async (access_token) => {
-    const res = await axios.get(`http://localhost:3000/api/user/getAllUser`);
-    return res.data;
+    return res;
 }
 export const deleteUser = async (id, access_token) => {
     const res = await axiosJWT.delete(`http://localhost:3000/api/user/delete-user/${id}`, {

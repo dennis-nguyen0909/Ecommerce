@@ -20,7 +20,7 @@ export const HomePage = () => {
 
     return (
         <div>
-            <div style={{ padding: '0 120px', margin: '10px 0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <WrapperTypeProduct>
                     {arr.map((item) => {
                         return (
@@ -33,6 +33,7 @@ export const HomePage = () => {
 
                 <div id="container" style={{ height: 'fit-content' }}>
                     <SliderComponent arrImages={[slider1, slider2, slider3, slider4]} />
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px 0', fontSize: '30px', }}>Sản Phẩm Mới</div>
                     <WrapperProduct>
                         {products && products.data ? (
                             products.data.map((product) => (

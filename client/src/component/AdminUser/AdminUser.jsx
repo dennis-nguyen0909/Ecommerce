@@ -1,5 +1,5 @@
-import { Button, Form, Input, message } from 'antd'
-import React, { useEffect, useState } from 'react'
+import { Button, Form, Input, Space, message } from 'antd'
+import React, { useEffect, useRef, useState } from 'react'
 import { TableComponent } from '../TableComponent/TableComponent'
 import { InputComponent } from '../InputComponent/InputComponent';
 import { getBase64 } from '../../untils';
@@ -13,8 +13,8 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { ModelComponent } from '../ModelComponent/ModelComponent';
 import { ButtonComponent } from '../../component/ButtonComponent/ButtonComponent'
-
-
+import Highlighter from 'react-highlight-words';
+import { SearchOutlined } from '@ant-design/icons';
 
 export const AdminUser = () => {
     const queryClient = useQueryClient()
@@ -46,10 +46,126 @@ export const AdminUser = () => {
         avatar: '',
         address: '',
     })
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const searchInput = useRef(null);
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({
+            setSelectedKeys,
+            selectedKeys,
+            confirm,
+            clearFilters,
+            close,
+        }) => (
+            <div
+                style={{
+                    padding: 8,
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+            >
+                <Input
+                    ref={searchInput}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{
+                        marginBottom: 8,
+                        display: 'block',
+                    }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Search
+                    </Button>
+                    <Button
+                        onClick={() => handleReset(clearFilters)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Reset
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm();
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        Filter
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            clearFilters && handleReset(clearFilters);
+                            close();
+                        }}
+                    >
+                        Close
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? '#1677ff' : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex]
+                .toString()
+                .toLowerCase()
+                .includes(value.toLowerCase()),
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{
+                        backgroundColor: '#ffc069',
+                        padding: 0,
+                    }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ''}
+                />
+            ) : (
+                text
+            ),
+    });
+
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText('');
+    };
     const fetchGetAllUser = async () => {
-        const response = await UserService.getAllUser2();
+        const response = await UserService.getAllUser(user?.access_token);
         return response
     }
+
     const mutation = useMutationHook(
         async (data) => {
             const {
@@ -67,8 +183,10 @@ export const AdminUser = () => {
     )
     const { data, isLoading, isError, isSuccess } = mutation
     const query = useQuery({ queryKey: ['users'], queryFn: fetchGetAllUser })
+
     const { isLoading: isLoadingUser } = query
-    const users = query.data
+    const users = query?.data?.data
+    console.log('users', users)
     const handleOnChangeAvatarDetail = async ({ fileList }) => {
         const file = fileList[0]
         if (!file.url && !file.preview) {
@@ -193,7 +311,7 @@ export const AdminUser = () => {
     const handleDetailUser = () => {
         if (rowSelected) {
             setIsLoadingUpdate(true)
-            fetchGetDetailProduct(rowSelected)
+            fetchGetDetailUser(rowSelected)
         }
         setIsOpenDrawer(true)
     }
@@ -230,8 +348,8 @@ export const AdminUser = () => {
         {
             title: 'Name',
             dataIndex: 'name',
-            render: (text) => <a>{text}</a>,
-            sorter: (a, b) => a.name.length - b.name.length
+            ...getColumnSearchProps('name'),
+            sorter: (a, b) => a.name.length - b.name.length,
         },
         {
             title: 'Email',
@@ -240,17 +358,8 @@ export const AdminUser = () => {
         }, {
             title: 'Admin',
             dataIndex: 'isAdmin',
-            filters: [
-                {
-                    text: 'True',
-                    value: true,
-                },
-                {
-                    text: 'False',
-                    value: false,
-                }
-            ],
-
+            ...getColumnSearchProps('isAdmin'),
+            render: (text) => text ? "True" : 'False',
         },
         {
             title: 'Phone',
@@ -266,7 +375,6 @@ export const AdminUser = () => {
             render: renderAction
         },
     ];
-
     const dataTable = users?.data?.map((user) => ({
         ...user,
         key: user._id,
@@ -275,18 +383,17 @@ export const AdminUser = () => {
 
 
 
-    const fetchGetDetailProduct = async (rowSelected) => {
-        console.log('userAC', user?.access_token)
+    const fetchGetDetailUser = async (rowSelected) => {
         const res = await UserService.getDetailUser(rowSelected, user?.access_token)
         if (res?.response?.data) {
             setStateUserDetail({
-                name: res?.response.data.name,
-                email: res?.response.data.email,
-                password: res?.response.data.password,
-                isAdmin: res?.response.data.isAdmin,
-                phone: res?.response.data.phone,
-                avatar: res?.response.data.avatar,
-                address: res?.response.data.address,
+                name: res?.response?.data?.name,
+                email: res?.response?.data?.email,
+                password: res?.response?.data?.password,
+                isAdmin: res?.response?.data?.isAdmin,
+                phone: res?.response?.data?.phone,
+                avatar: res?.response?.data?.avatar,
+                address: res?.response?.data?.address,
             })
             // formDrawer.setFieldsValue(res.response.data)
         }
@@ -294,7 +401,7 @@ export const AdminUser = () => {
     }
     useEffect(() => {
         if (rowSelected) {
-            fetchGetDetailProduct(rowSelected)
+            fetchGetDetailUser(rowSelected)
         }
     }, [rowSelected])
     useEffect(() => {
@@ -312,7 +419,6 @@ export const AdminUser = () => {
     const onUpdateProduct = async () => {
         setIsLoadingUpdate(true)
         const res = await UserService.updateUser(rowSelected, stateUserDetail, user?.access_token);
-        console.log('res',)
         formModal.setFieldsValue(res.updateNewProduct)
         if (res?.data?.status === "Ok") {
             message.success('Cập nhật thành công')

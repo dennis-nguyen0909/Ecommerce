@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Row, Col, Badge, Image, Popover } from 'antd'
-import { WrapperHeader, WrapperImageLogo, WrapperLogout, WrapperText, WrapperTextSmall } from './style'
+import { WrapperHeader, WrapperIcon, WrapperImageLogo, WrapperLogout, WrapperText, WrapperTextSmall } from './style'
 import Search from 'antd/es/input/Search'
-import { DownOutlined, UserOutlined, ShoppingCartOutlined } from '@ant-design/icons'
+import { DownOutlined, UserOutlined, ShoppingCartOutlined, DribbbleOutlined, SearchOutlined } from '@ant-design/icons'
 import { WrapperAccount } from './style'
 import { ButtonInputSearch } from '../ButtonInputSearch/ButtonInputSearch'
 import * as UserService from '../../services/UserService'
@@ -12,9 +12,32 @@ import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { resetUser, updateUser } from '../../redux/slides/userSlide'
 import LoadingComponent from '../LoadingComponent/LoadingComponent'
-
+import logoVn from '../../assets/images/icon-vn.jpg'
+import { Button, Drawer, Radio, Space } from 'antd';
+import { DrawerComponent } from '../DrawerComponent/DrawerComponent'
 // import slider4 from '../../assets/images/slider4.jpg'
 export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
+    const [openSearch, setOpenSearch] = useState(false);
+    const [openCart, setOpenCart] = useState(false);
+    const [placement, setPlacement] = useState('left');
+    const showDrawerSearch = () => {
+        setOpenSearch(true);
+    };
+    const onCloseSearch = () => {
+        setOpenSearch(false);
+    };
+    const onChangeSearch = (e) => {
+        setPlacement(e.target.value);
+    };
+    const showDrawerCart = () => {
+        setOpenCart(true);
+    };
+    const onCloseCart = () => {
+        setOpenCart(false);
+    };
+    const onChangeCart = (e) => {
+        setPlacement(e.target.value);
+    };
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
     const dispatch = useDispatch()
@@ -34,6 +57,7 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
         setLoading(true);
         await UserService.logoutUser();
         localStorage.removeItem("access_token")
+        navigate('/')
         dispatch(resetUser())
         setLoading(false)
     }
@@ -43,7 +67,6 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const handleNavigateAdmin = () => {
         navigate('/system/admin')
     }
-    console.log('user', user.access_token)
     const content = (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
             <WrapperLogout onClick={handleLogout}>Đăng xuất</WrapperLogout>
@@ -56,14 +79,20 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
 
     return (
         <div style={{ width: '100%' }}>
+            <div style={{ backgroundColor: 'black', height: '30px', display: 'flex', alignItems: 'center', paddingLeft: '40px' }}>
+                <DribbbleOutlined style={{ color: '#fff', }} />
+            </div>
             <WrapperHeader>
-                <Col onClick={() => navigate('/')} span={5} style={{ display: 'flex', alignItems: "center", cursor: 'pointer' }} >
-                    <WrapperImageLogo width={'45px'} height={'45px'} src={logo} preview={false} />
-                    <WrapperText>
+                <Col onClick={() => navigate('/')} span={4} style={{ display: 'flex', alignItems: "center", cursor: 'pointer' }} >
+                    {/* <WrapperImageLogo width={'45px'} height={'45px'} src={logo} preview={false} /> */}
+                    {/* <WrapperText>
                         SHOP md
-                    </WrapperText>
+                    </WrapperText> */}
+                    <div style={{ backgroundColor: 'black', color: 'white', width: '180px', height: '35px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '18px' }}>
+                        Sneaker Asia
+                    </div>
                 </Col>
-                <Col span={13} >
+                {/* <Col span={1} >
                     {!isHiddenSearch && (
 
                         <ButtonInputSearch
@@ -73,43 +102,81 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
 
                         // onSearch={onSearch}
                         />
+
                     )}
-                </Col>
-                <Col span={6} style={{ display: 'flex', gap: '54px', alignItems: 'center' }}>
+
+                </Col> */}
+                <Col span={5} style={{ position: 'absolute', right: '50px', display: 'flex', gap: '54px', alignItems: 'center' }}>
                     <LoadingComponent isLoading={loading}>
-                        <WrapperAccount >
-                            {user?.avatar ? (
-                                <img src={userAvatar} style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover' }} />) :
-                                <UserOutlined style={{ fontSize: "30px" }} />
-                            }
-                            {user?.access_token ?
-                                <>
-                                    <Popover content={content} trigger="click">
-                                        <div>Xin chào</div>
-                                        <div>{userName?.length ? userName : user?.email}</div>
-                                    </Popover>
-                                </>
-                                : <div onClick={handleNavigateLogin} style={{ cursor: 'pointer' }}>
-                                    <WrapperTextSmall style={{ fontSize: "12px" }}>Đăng nhập / Đăng ký</WrapperTextSmall>
-                                    <div>
-                                        <WrapperTextSmall style={{ fontSize: "12px" }}>Tài khoản <DownOutlined /></WrapperTextSmall>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px' }}>
+                            <WrapperIcon>
+                                {!isHiddenSearch && <SearchOutlined style={{ fontSize: '20px' }} onClick={showDrawerSearch} />}
+                            </WrapperIcon>
+                            <WrapperAccount >
+                                {user?.avatar
+                                    ? (
+                                        <img src={userAvatar} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />)
+                                    :
+                                    <UserOutlined onClick={handleNavigateLogin} style={{ cursor: 'pointer', fontSize: "20px" }} />
+                                }
+                                {user?.access_token ?
+                                    <>
+                                        <Popover content={content} trigger="click">
+                                            <div style={{ color: 'rgb(109,171,230)', padding: '0 10px' }}>Xin chào</div>
+                                            <div style={{ padding: '0 10px', textDecoration: 'underline' }}>{userName?.length ? userName : user?.email}</div>
+                                        </Popover>
+                                    </>
+                                    : <div>
                                     </div>
-                                </div>
-                            }
+
+                                }
+
+                            </WrapperAccount>
                             <div style={{ display: 'flex', justifyContent: "center", alignItems: "center" }}>
                                 {!isHiddenCart && (
                                     <>
-                                        <Badge count={4} size='small'>
-                                            <ShoppingCartOutlined style={{ fontSize: "30px" }} />
-                                        </Badge>
-                                        <WrapperTextSmall>Giỏ Hàng</WrapperTextSmall>
+                                        <WrapperIcon>
+                                            <Badge count={4} size='small' >
+                                                <ShoppingCartOutlined style={{ fontSize: "20px" }} onClick={showDrawerCart} />
+                                            </Badge>
+                                        </WrapperIcon>
+                                        {/* <WrapperTextSmall>Giỏ Hàng</WrapperTextSmall> */}
                                     </>
                                 )}
                             </div>
-                        </WrapperAccount>
+                        </div>
                     </LoadingComponent>
                 </Col>
             </WrapperHeader>
+
+            <DrawerComponent
+                title="Sneaker Asia"
+                placement={"top"}
+                closable={false}
+                onClose={onCloseSearch}
+                open={openSearch}
+                key={placement}
+            >
+                {!isHiddenSearch && (
+                    <ButtonInputSearch
+                        placeholder="Tìm kiếm sản phẩm ...."
+                        textButton="Tìm kiếm"
+                        size="large"
+                    // onSearch={onSearch}
+                    />
+
+                )}
+            </DrawerComponent>
+            <Drawer
+                title="Sneaker Asia"
+                placement={"right"}
+                closable={false}
+                onClose={onCloseCart}
+                open={openCart}
+                key={placement}
+            >
+                <div>Giỏ Hàng</div>
+            </Drawer>
         </div>
     )
 }

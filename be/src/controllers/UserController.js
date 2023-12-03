@@ -136,7 +136,6 @@ const getDetailUser = async (req, res) => {
 
         const response = await UserService.getDetailUser(userId);
         return res.status(200).json({
-            message: "Ok",
             response
         })
     } catch (error) {

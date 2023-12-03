@@ -3,6 +3,6 @@ import { WrapperDivText } from './style'
 
 export const TypeProduct = ({ name }) => {
     return (
-        <WrapperDivText>{name}</WrapperDivText>
+        <WrapperDivText >{name}</WrapperDivText>
     )
 }

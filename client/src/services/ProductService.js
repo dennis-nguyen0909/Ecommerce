@@ -10,9 +10,12 @@ export const createProduct = async (data) => {
     const res = await axios.post('http://localhost:3000/api/product/create', data);
     return res.data;
 }
-
-export const getDetailProduct = async (id) => {
-    const res = await axios.get(`http://localhost:3000/api/product/details/${id}`);
+export const getDetailProduct = async (id, access_token) => {
+    const res = await axiosJWT.get(`http://localhost:3000/api/product/details/${id}`, {
+        headers: {
+            token: `Bearer ${access_token}`
+        }
+    });
     return res.data;
 }
 export const updateProduct = async (id, data, access_token) => {
@@ -23,7 +26,6 @@ export const updateProduct = async (id, data, access_token) => {
     });
     return res.data;
 }
-
 export const deleteProduct = async (id, access_token) => {
     const res = await axiosJWT.delete(`http://localhost:3000/api/product/delete/${id}`, {
         headers: {

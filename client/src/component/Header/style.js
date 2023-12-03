@@ -5,7 +5,7 @@ export const WrapperHeader = styled(Row)`
     border-bottom:1px solid #ccc;
     padding: 15px 120px;
     // background-color: rgb(128, 128, 128);
-    align-item:center;
+    align-items:center;
     gap:16px;
     flex-wrap:nowrap;
     display:flex;
@@ -21,10 +21,10 @@ export const WrapperText = styled.span`
 
 `
 export const WrapperAccount = styled.div`
+    cursor:pointer;
     display:flex;
-    align-item:center;
+    align-items:center;
     color:black;
-    gap:10px;
 `
 export const WrapperTextSmall = styled.span`
     font-size:12px;
@@ -41,9 +41,18 @@ export const WrapperLogout = styled.p`
     align-items:center;
     width:100%;
     font-size:12px;
-    background-color:rgb(240,213,219);
-    border-radius:12px;
+    background-color:rgb(128,128,128);
+    padding:0 5px;
+    border-radius:8px;
+    color:#fff;
     &:hover{
         cursor:pointer;
+    }
+`
+export const WrapperIcon = styled.div`
+    fontSize: 20px;
+    cursor:pointer;
+    &:hover{
+        transform:scale(1.2);
     }
 `
