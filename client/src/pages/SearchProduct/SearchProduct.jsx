@@ -1,22 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { TypeProduct } from '../../component/TypeProduct/TypeProduct'
-import { WrapperButtonMore, WrapperProduct, WrapperTypeProduct } from './style'
-import { SliderComponent } from '../../component/SliderComponent/SliderComponent'
-import slider1 from '../../assets/images/slider1.jpg'
-import slider2 from '../../assets/images/slider2.jpg'
-import slider3 from '../../assets/images/slider3.jpg'
-import slider4 from '../../assets/images/slider4.jpg'
-import { CardComponent } from '../../component/CardComponent/CardComponent'
-import * as ProductService from '../../services/ProductService'
-import { useQueries, useQuery } from '@tanstack/react-query'
 import { useSelector } from 'react-redux'
 import { useDebounce } from '../../hooks/useDebounce'
-export const HomePage = () => {
-    const arr = ['About Us', 'Cửa Hàng', 'Giảm giá', 'Liên hệ', 'Chăm sóc khách hàng']
-    const refSearch = useRef(false)
-    const searchProduct = useSelector((state) => state.product?.search)
-    const searchDebounce = useDebounce(searchProduct, 1000)
+import * as ProductService from '../../services/ProductService'
+import { useQuery } from '@tanstack/react-query'
+import { SliderComponent } from '../../component/SliderComponent/SliderComponent'
+import { WrapperButtonMore, WrapperProduct } from '../HomePage/style'
+import { CardComponent } from '../../component/CardComponent/CardComponent'
+export const SearchProduct = () => {
+    const productSearch = useSelector((state) => state?.product?.search)
     const [stateProduct, setStateProduct] = useState([])
+    const searchDebounce = useDebounce(productSearch, 100)
+    const refSearch = useRef(false)
     const fetchProduct = async (search) => {
         const res = await ProductService.getAllProduct(search);
         if (search.length > 0 || refSearch.current) {
@@ -24,9 +18,8 @@ export const HomePage = () => {
         }
         return res;
     }
-    const query = useQuery({ queryKey: ['products'], queryFn: fetchProduct })
-    const products = query.data
-
+    // const query = useQuery({ queryKey: ['products'], queryFn: fetchProduct })
+    // const products = query.data
     useEffect(() => {
         // Dùng trick để lần đầu kh chạy
         if (refSearch) {
@@ -34,29 +27,21 @@ export const HomePage = () => {
         }
         refSearch.current = true
     }, [searchDebounce])
-    useEffect(() => {
-        if (products?.data?.length > 0) {
-            setStateProduct(products?.data)
-        }
-    }, [products])
+    // useEffect(() => {
+    //     if (products?.data?.length > 0) {
+    //         setStateProduct(products?.data)
+    //     }
+    // }, [products])
     return (
-        <div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <WrapperTypeProduct>
-                    {arr.map((item) => {
-                        return (
-                            <TypeProduct key={item} name={item} />
-                        )
-                    })}
-                </WrapperTypeProduct>
-            </div>
+        <>
+            <h3 style={{ padding: '0 30px', fontSize: '14px', gap: '10px', color: 'rgb(137,137,137)' }}>Tìm Kiếm  /
+                <span style={{ marginLeft: '10px', fontSize: '14px', color: 'black' }}>#{productSearch}</span>
+            </h3>
             <div className='body' style={{ width: '100%', backgroundColor: "#fff" }}>
-
                 <div id="container" style={{ height: 'fit-content' }}>
-                    <SliderComponent arrImages={[slider1, slider2, slider3, slider4]} />
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px 0', fontSize: '30px', }}>Sản Phẩm Mới</div>
                     <WrapperProduct>
-                        {stateProduct ? (
+                        {stateProduct && stateProduct.length > 0 ? (
                             stateProduct.map((product) => (
                                 <CardComponent
                                     key={product._id}
@@ -72,7 +57,7 @@ export const HomePage = () => {
                                 />
                             ))
                         ) : (
-                            <p>No products available</p>
+                            <p>Không tìm thấy sản phẩm</p>
                         )}
                     </WrapperProduct>
                     <div style={{ width: '100%', display: 'flex', justifyContent: 'center', margin: '15px 0' }}>
@@ -85,6 +70,6 @@ export const HomePage = () => {
                     {/* <NavbarComponent /> */}
                 </div>
             </div>
-        </div >
+        </>
     )
 }

@@ -19,6 +19,7 @@ export const ButtonInputSearch = (props) => {
                 placeholder={placeholder}
                 bordered={bordered}
                 style={{ backgroundColor: backgroundColor }}
+                {...props}
             />
             <ButtonComponent
                 size={size}

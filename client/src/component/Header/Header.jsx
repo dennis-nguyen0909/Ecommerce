@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from 'react'
-import { Row, Col, Badge, Image, Popover } from 'antd'
-import { WrapperHeader, WrapperIcon, WrapperImageLogo, WrapperLogout, WrapperText, WrapperTextSmall } from './style'
-import Search from 'antd/es/input/Search'
-import { DownOutlined, UserOutlined, ShoppingCartOutlined, DribbbleOutlined, SearchOutlined } from '@ant-design/icons'
+import { Row, Col, Badge, Popover } from 'antd'
+import { WrapperHeader, WrapperIcon, WrapperLogout } from './style'
+import { UserOutlined, ShoppingCartOutlined, DribbbleOutlined, SearchOutlined } from '@ant-design/icons'
 import { WrapperAccount } from './style'
 import { ButtonInputSearch } from '../ButtonInputSearch/ButtonInputSearch'
 import * as UserService from '../../services/UserService'
-import logo from '../../assets/images/logo.jpeg'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import { resetUser, updateUser } from '../../redux/slides/userSlide'
+import { resetUser } from '../../redux/slides/userSlide'
+import { searchProduct } from '../../redux/slides/productSlide'
 import LoadingComponent from '../LoadingComponent/LoadingComponent'
-import logoVn from '../../assets/images/icon-vn.jpg'
-import { Button, Drawer, Radio, Space } from 'antd';
+import { Drawer } from 'antd';
 import { DrawerComponent } from '../DrawerComponent/DrawerComponent'
+import { InputComponent } from '../InputComponent/InputComponent'
+import { ButtonComponent } from '../ButtonComponent/ButtonComponent'
 // import slider4 from '../../assets/images/slider4.jpg'
 export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const [openSearch, setOpenSearch] = useState(false);
     const [openCart, setOpenCart] = useState(false);
     const [placement, setPlacement] = useState('left');
+    const [search, setSearch] = useState('')
     const showDrawerSearch = () => {
         setOpenSearch(true);
     };
@@ -76,6 +77,16 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
             )}
         </div>
     );
+    const onSearch = (e) => {
+        setSearch(e.target.value)
+
+    }
+    const onClickSearch = (e) => {
+        dispatch(searchProduct(search))
+        navigate('/search-product')
+        setOpenSearch(false)
+        setSearch('');
+    }
 
     return (
         <div style={{ width: '100%' }}>
@@ -148,23 +159,42 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                     </LoadingComponent>
                 </Col>
             </WrapperHeader>
-
             <DrawerComponent
+
                 title="Sneaker Asia"
                 placement={"top"}
                 closable={false}
                 onClose={onCloseSearch}
                 open={openSearch}
                 key={placement}
+
             >
                 {!isHiddenSearch && (
-                    <ButtonInputSearch
-                        placeholder="Tìm kiếm sản phẩm ...."
-                        textButton="Tìm kiếm"
-                        size="large"
-                    // onSearch={onSearch}
-                    />
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '40px' }}>
+                        <InputComponent
+                            placeholder="Tìm kiếm sản phẩm ...."
+                            textButton="Tìm kiếm"
+                            size="large"
+                            value={search}
+                            onChange={onSearch}
 
+                        />
+                        <ButtonComponent
+                            onClick={onClickSearch}
+                            size={'40'}
+                            styleButton={{
+                                backgroundColor: "rgb(71,71,76)",
+                                height: '40px',
+                                width: '400px',
+                                border: 'none',
+                                borderRadius: "12px",
+                                margin: "20px 0"
+                            }}
+                            textButton={"Search"}
+                            styleTextButton={{ color: "#fff", fontSize: '15px', fontWeight: 700 }}
+                        >
+                        </ButtonComponent>
+                    </div>
                 )}
             </DrawerComponent>
             <Drawer
