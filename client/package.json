@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^13.5.0",
     "ant": "^0.2.0",
     "antd": "^5.11.2",
+    "antd-table-saveas-excel": "^2.2.1",
     "axios": "^1.6.2",
     "cloudinary": "^1.41.0",
     "dotenv": "^16.3.1",
