@@ -169,4 +169,18 @@ const getDetailUser = (userId) => {
         }
     })
 }
-module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser }  
+const deleteManyUser = (ids) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await User.deleteMany({ _id: ids })
+            resolve({
+                status: 'Ok',
+                EC: 1,
+                message: 'Xóa thành công!'
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser, deleteManyUser }  

@@ -11,6 +11,7 @@ const UserRouter = (app) => {
     router.get('/getAllUser', authMiddleware, UserController.getAllUser);
     router.get('/get-details/:id', authUserMiddleware, UserController.getDetailUser);
     // router.get('/get-details/:id', UserController.getDetailUser);
+    router.post('/delete-many', authMiddleware, UserController.deleteManyUser);
     router.post('/refresh-token', UserController.refreshToken);
     router.post('/logout-user', UserController.logoutUser);
     return app.use('/api/user', router);

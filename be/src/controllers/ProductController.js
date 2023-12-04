@@ -106,6 +106,26 @@ const getAllProduct2 = async (req, res) => {
         })
     }
 }
+
+const deleteManyProduct = async (req, res) => {
+    try {
+        const ids = req.body.ids
+        if (!ids) {
+            return res.status(404).json({
+                status: 'Error',
+                message: 'Vui long chon product'
+            })
+        }
+        const response = await ProductService.deleteManyProduct(ids);
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(404).json({
+            status: 'Error',
+            message: 'Loi tu services',
+            error
+        })
+    }
+}
 module.exports = {
-    createProduct, updateProduct, deleteProduct, getAllProduct, getDetailProduct, getAllProduct2
+    createProduct, updateProduct, deleteProduct, getAllProduct, getDetailProduct, getAllProduct2, deleteManyProduct
 }

@@ -180,4 +180,22 @@ const logoutUser = async (req, res) => {
         })
     }
 }
-module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser, refreshToken, logoutUser }
+const deleteManyUser = async (req, res) => {
+    try {
+        const ids = req.body.ids
+        if (!ids) {
+            return res.status(404).json({
+                status: 'Error',
+                message: 'Vui long chon user'
+            })
+        }
+        const response = await UserService.deleteManyUser(ids);
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(404).json({
+            message: 'Lỗi từ services',
+            status: 'Error'
+        })
+    }
+}
+module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser, refreshToken, logoutUser, deleteManyUser }

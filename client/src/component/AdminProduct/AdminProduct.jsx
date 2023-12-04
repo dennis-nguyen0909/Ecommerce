@@ -37,6 +37,7 @@ export const AdminProduct = () => {
         clearFilters();
         setSearchText('');
     };
+    console.log('row', rowSelected)
     const user = useSelector((state) => state.user)
     const [stateProduct, setStateProduct] = useState({
         name: '',
@@ -57,13 +58,35 @@ export const AdminProduct = () => {
         image: '',
         countInStock: '',
     })
+    const deleteManyProduct = useMutationHook(
+        async (data) => {
+            const {
+                token, ...ids
+            } = data
+            const res = await ProductService.deleteManyProduct(ids, token);
+            if (+res?.EC === 1) {
+                message.success("Xóa thành công !")
+                queryClient.invalidateQueries({ queryKey: ['products'], queryFn: fetchGetAllProduct })
+                return res;
+            } else if (+res?.EC === 0) {
+                message.error('Xóa thất bại')
+                return;
+            }
+
+
+        }
+    )
+    const handleDeleteManyProduct = (ids) => {
+        deleteManyProduct.mutate({ ids: ids, token: user?.access_token })
+        queryClient.invalidateQueries({ queryKey: ['products'], queryFn: fetchGetAllProduct })
+
+    }
     const fetchGetAllProduct = async () => {
         const response = await ProductService.getAllProduct();
         return response
     }
     const mutation = useMutationHook(
         async (data) => {
-            console.log('data-create', data)
             const {
                 name,
                 price,
@@ -430,6 +453,7 @@ export const AdminProduct = () => {
             </div>
             <div style={{ border: '1px solid #ccc', margin: '10px 20px', borderRadius: '10px' }}>
                 <TableComponent
+                    handleDeleteMany={handleDeleteManyProduct}
                     columns={columns}
                     data={dataTable}
                     isLoading={isLoadingProduct}

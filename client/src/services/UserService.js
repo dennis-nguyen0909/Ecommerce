@@ -43,7 +43,7 @@ export const updateUser = async (id, data, access_token) => {
 }
 
 export const createUser = async (data) => {
-    const res = await axios.post('http://localhost:3000/api/user/create', data);
+    const res = await axios.post('http://localhost:3000/api/user/sign-up', data);
     return res.data;
 }
 export const getAllUser = async (access_token) => {
@@ -62,3 +62,15 @@ export const deleteUser = async (id, access_token) => {
     });
     return res.data;
 }
+
+
+export const deleteManyUser = async (ids, access_token) => {
+    const res = await axiosJWT.post(`http://localhost:3000/api/user/delete-many`, ids, {
+        headers: {
+            token: `Bearer ${access_token}`,
+        }
+    });
+    return res.data;
+}
+
+

@@ -166,6 +166,26 @@ export const AdminUser = () => {
         return response
     }
 
+    const deleteManyUser = useMutationHook(
+        async (data) => {
+            const {
+                token, ...ids
+            } = data
+            const res = await UserService.deleteManyUser(ids, token);
+            if (+res?.EC === 1) {
+                message.success("Xóa thành công !")
+                queryClient.invalidateQueries({ queryKey: ['users'], queryFn: fetchGetAllUser })
+                return res;
+            } else if (+res?.EC === 0) {
+                message.error('Xóa thất bại')
+                return;
+            }
+        }
+
+    )
+    const handleDeleteManyUser = (ids) => {
+        deleteManyUser.mutate({ ids: ids, token: user?.access_token })
+    }
     const mutation = useMutationHook(
         async (data) => {
             const {
@@ -186,7 +206,6 @@ export const AdminUser = () => {
 
     const { isLoading: isLoadingUser } = query
     const users = query?.data?.data
-    console.log('users', users)
     const handleOnChangeAvatarDetail = async ({ fileList }) => {
         const file = fileList[0]
         if (!file.url && !file.preview) {
@@ -359,7 +378,6 @@ export const AdminUser = () => {
             title: 'Admin',
             dataIndex: 'isAdmin',
             ...getColumnSearchProps('isAdmin'),
-            render: (text) => text ? "True" : 'False',
         },
         {
             title: 'Phone',
@@ -378,6 +396,7 @@ export const AdminUser = () => {
     const dataTable = users?.data?.map((user) => ({
         ...user,
         key: user._id,
+        isAdmin: user?.isAdmin ? "TRUE" : "FALSE"
 
     })) || [];
 
@@ -464,6 +483,7 @@ export const AdminUser = () => {
             </div>
             <div style={{ border: '1px solid #ccc', margin: '10px 20px', borderRadius: '10px' }}>
                 <TableComponent
+                    handleDeleteMany={handleDeleteManyUser}
                     columns={columns}
                     data={dataTable}
                     isLoading={isLoadingUser}

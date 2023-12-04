@@ -208,6 +208,27 @@ const getAllProduct2 = () => {
 //         }
 //     })
 // }
+const deleteManyProduct = (ids) => {
+    console.log('danhsach', ids)
+    return new Promise(async (resolve, reject) => {
+        try {
+            await Product.deleteMany({
+                _id: { $in: ids }
+            })
+            resolve({
+                status: 'Ok',
+                EC: 1,
+                Message: "Delete Success"
+            })
+        } catch (error) {
+            resolve({
+                status: 'Error',
+                EC: 0,
+                Message: "Delete Error"
+            })
+        }
+    })
+}
 module.exports = {
-    createProduct, updateProduct, deleteProduct, getDetailProduct, getAllProduct, getAllProduct2
+    createProduct, updateProduct, deleteProduct, getDetailProduct, getAllProduct, getAllProduct2, deleteManyProduct
 }  
