@@ -58,13 +58,15 @@ export const WrapperQualityProduct = styled.div`
     display:flex;
     gap:4px;
     align-items:center;
-    width:120px;
+    width:fit-content;
     border :1px solid #ccc;
     border-radius:4px;
 `
 export const WrapperButtonQuality = styled.button`
     border:none;
     background:transparent;
+    width:30px;
+    text-align:center;
 `
 export const WrapperInputNumber = styled(InputNumber)`
     &.ant-input-number.ant-input-number-sm{

@@ -51,6 +51,7 @@ export const HomePage = () => {
                             {products?.data ? (
                                 products?.data.map((product) => (
                                     <CardComponent
+                                        id={product._id}
                                         key={product._id}
                                         countInStock={product.countInStock}
                                         description={product.description}

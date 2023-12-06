@@ -1,68 +1,89 @@
-import React from 'react'
-import { Button, Col, Image, InputNumber, Row } from 'antd'
-import slider4 from '../../assets/images/slider4.jpg'
-import slider1 from '../../assets/images/slider1.jpg'
+import React, { useState } from 'react'
+import { Button, Col, Image, InputNumber, Rate, Row } from 'antd'
 import { WrapperAddressProduct, WrapperButtonQuality, WrapperImageColSmall, WrapperImageSmall, WrapperInputNumber, WrapperPriceProduct, WrapperPriceTextProduct, WrapperQualityBtn, WrapperQualityProduct, WrapperStyleNameProduct, WrapperStyleTextSell } from './style'
-import { StarFilled, PlusOutlined, MinusOutlined } from '@ant-design/icons'
+import { PlusOutlined, MinusOutlined } from '@ant-design/icons'
 import { ButtonComponent } from '../ButtonComponent/ButtonComponent'
-export const ProductDetailsComponent = () => {
+import * as ProductService from '../../services/ProductService'
+import { useQuery } from '@tanstack/react-query'
+import { useSelector } from 'react-redux'
+export const ProductDetailsComponent = ({ idProduct }) => {
+    const [numProduct, setNumProduct] = useState(1);
+    const user = useSelector((state) => state.user)
+    const fetchGetDetailProduct = async () => {
+        const res = await ProductService.getDetailProduct(idProduct);
+        return res.response;
+
+    }
+    const { data } = useQuery({ queryKey: ['product-detail'], queryFn: fetchGetDetailProduct })
+    const productDetail = data?.data
+    const handleOnChangeNum = (value) => {
+        setNumProduct(Number(value))
+    }
+    const handleChangeCount = (action) => {
+        if (action === 'increase') {
+            setNumProduct(numProduct + 1)
+        } else {
+            setNumProduct(numProduct - 1)
+
+        }
+    }
     return (
         <Row style={{ padding: '16px', backgroundColor: "#fff", borderRadius: '4px' }}>
             <Col span={10} style={{ borderRight: '1px solid #solid', paddingRight: '8px' }}>
-                <Image src={slider4} alt='image-product' preview={false} />
+                <Image src={productDetail?.image} alt='image-product' preview={false} width={'100%'} height={'500px'} />
                 <Row style={{ paddingTop: '10px', justifyContent: 'space-between' }}>
                     <WrapperImageColSmall span={4}>
-                        <WrapperImageSmall src={slider1} alt='image-product' preview={false} />
+                        <WrapperImageSmall src={productDetail?.image} alt='image-product' preview={false} />
                     </WrapperImageColSmall>
                     <WrapperImageColSmall span={4}>
-                        <WrapperImageSmall src={slider1} alt='image-product' preview={false} />
+                        <WrapperImageSmall src={productDetail?.image} alt='image-product' preview={false} />
                     </WrapperImageColSmall>
                     <WrapperImageColSmall span={4}>
-                        <WrapperImageSmall src={slider1} alt='image-product' preview={false} />
+                        <WrapperImageSmall src={productDetail?.image} alt='image-product' preview={false} />
                     </WrapperImageColSmall>
                     <WrapperImageColSmall span={4}>
-                        <WrapperImageSmall src={slider1} alt='image-product' preview={false} />
+                        <WrapperImageSmall src={productDetail?.image} alt='image-product' preview={false} />
                     </WrapperImageColSmall>
                     <WrapperImageColSmall span={4}>
-                        <WrapperImageSmall src={slider1} alt='image-product' preview={false} />
+                        <WrapperImageSmall src={productDetail?.image} alt='image-product' preview={false} />
                     </WrapperImageColSmall>
                     <WrapperImageColSmall span={4}>
-                        <WrapperImageSmall src={slider1} alt='image-product' preview={false} />
+                        <WrapperImageSmall src={productDetail?.image} alt='image-product' preview={false} />
                     </WrapperImageColSmall>
                 </Row>
+
             </Col >
             <Col span={14} style={{ padding: ' 0 40px' }}>
-                <WrapperStyleNameProduct>Nike 550 SB</WrapperStyleNameProduct>
+                <WrapperStyleNameProduct>{productDetail?.name}</WrapperStyleNameProduct>
                 <div>
-                    <StarFilled style={{ fontSize: "12px", color: "yellow" }} />
-                    <StarFilled style={{ fontSize: "12px", color: "yellow" }} />
+                    <Rate allowHalf defaultValue={productDetail?.rating} />
                     <WrapperStyleTextSell>Đã bán | 1000+</WrapperStyleTextSell>
                 </div>
                 <WrapperPriceProduct>
-                    <WrapperPriceTextProduct>550.000</WrapperPriceTextProduct>
+                    <WrapperPriceTextProduct>{productDetail?.price}</WrapperPriceTextProduct>
                 </WrapperPriceProduct>
                 <WrapperAddressProduct>
-                    <span>Giao đến</span>
-                    <span className='address'>Q.1,P.BẾN NGHÉ , TPHCM</span> -
+                    <span style={{ paddingRight: '20px' }}>Giao đến:</span>
+                    <span className='address'>{user?.address}</span> -
                     <span className='change-address'> Đổi địa chỉ</span>
                 </WrapperAddressProduct>
                 <div style={{ margin: '10px 0 20px', padding: '10px 0', borderTop: '1px solid #ccc', borderBottom: '1px solid #ccc' }}>
                     <div style={{ margin: "6px 0" }}>Số lượng</div>
                     <WrapperQualityProduct>
                         <WrapperButtonQuality>
-                            <MinusOutlined style={{ color: "#000", fontSize: "20px" }} />
+                            <MinusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('decrease')} />
                         </WrapperButtonQuality>
-
-                        <WrapperInputNumber defaultValue={1} size='small' />
+                        {/* <WrapperInputNumber defaultValue={1} size='small' value={numProduct} onChange={handleOnChangeNum} /> */}
+                        <input defaultValue={1} value={numProduct} onChange={handleOnChangeNum} style={{ width: '30px', border: 'transparent', textAlign: 'center', borderLeft: '1px solid #ccc', borderRight: '1px solid #ccc' }} />
                         <WrapperButtonQuality>
-                            <PlusOutlined style={{ color: "#000", fontSize: "20px" }} />
+                            <PlusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('increase')} />
                         </WrapperButtonQuality>
 
                     </WrapperQualityProduct>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <ButtonComponent
-               
+
                         size={'40'}
                         styleButton={{
                             backgroundColor: "rgb(255,57,69)",
@@ -76,7 +97,7 @@ export const ProductDetailsComponent = () => {
                     >
                     </ButtonComponent>
                     <ButtonComponent
-                    
+
                         size={'40'}
                         styleButton={{
                             backgroundColor: "transparent",
@@ -87,6 +108,7 @@ export const ProductDetailsComponent = () => {
                         }}
                         textButton={"Mua trả sau"}
                         styleTextButton={{ color: "rgb(13,92,182)", fontSize: "15px" }}
+
                     >
                     </ButtonComponent>
                 </div>
