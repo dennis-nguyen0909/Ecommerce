@@ -1,8 +1,11 @@
 import React from 'react'
 import { WrapperContent, WrapperLabelText, WrapperTextPrice, WrapperTextValue } from './style'
 import { Checkbox, Rate } from 'antd'
+import { useLocation } from 'react-router-dom'
 
-export const NavbarComponent = () => {
+export const NavbarComponent = ({ types }) => {
+    const location = useLocation()
+    console.log('types',)
     const onChange = () => {
 
     }
@@ -10,8 +13,12 @@ export const NavbarComponent = () => {
         switch (type) {
             case 'text':
                 return options.map((option) => {
+                    
                     return (
-                        <WrapperTextValue>{option}</WrapperTextValue>
+                        < WrapperTextValue >
+                            {option}
+                        </WrapperTextValue >
+
                     )
                 })
             case 'checkbox':
@@ -46,9 +53,9 @@ export const NavbarComponent = () => {
     }
     return (
         <div>
-            <WrapperLabelText>Label</WrapperLabelText>
+            <WrapperLabelText>Loại Sản Phẩm</WrapperLabelText>
             <WrapperContent>
-                {renderContent('text', ['NIKE', 'ADIDAS', 'SAMBA', 'MLB'])}
+                {renderContent('text', types)}
             </WrapperContent>
             {/* <WrapperContent>
                 {renderContent('checkbox', [

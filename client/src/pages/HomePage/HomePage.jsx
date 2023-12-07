@@ -13,10 +13,11 @@ import { useSelector } from 'react-redux'
 import { useDebounce } from '../../hooks/useDebounce'
 import LoadingComponent from '../../component/LoadingComponent/LoadingComponent'
 export const HomePage = () => {
-    const arr = ['About Us', 'Cửa Hàng', 'Giảm giá', 'Liên hệ', 'Chăm sóc khách hàng']
+    // const arr = ['About Us', 'Cửa Hàng', 'Giảm giá', 'Liên hệ', 'Chăm sóc khách hàng']
     const searchProduct = useSelector((state) => state.product?.search)
     const searchDebounce = useDebounce(searchProduct, 1000)
     const [limit, setLimit] = useState(3)
+    const [typeProduct, setTypeProduct] = useState([])
     const fetchProduct = async (context) => {
         const limit = context?.queryKey && context?.queryKey[1]
         const search = ''
@@ -30,11 +31,22 @@ export const HomePage = () => {
     const handleReset = () => {
         setLimit(3)
     }
+
+
+    const fetchTypeProduct = async () => {
+        const res = await ProductService.getAllTypeProduct();
+        if (res?.status === 'Ok') {
+            setTypeProduct(res?.data);
+        }
+    }
+    useEffect(() => {
+        fetchTypeProduct();
+    }, [])
     return (
         <div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <WrapperTypeProduct>
-                    {arr.map((item) => {
+                    {typeProduct?.map((item) => {
                         return (
                             <TypeProduct key={item} name={item} />
                         )

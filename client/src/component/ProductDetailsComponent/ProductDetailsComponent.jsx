@@ -60,7 +60,7 @@ export const ProductDetailsComponent = ({ idProduct }) => {
                     <WrapperStyleTextSell>Đã bán | 1000+</WrapperStyleTextSell>
                 </div>
                 <WrapperPriceProduct>
-                    <WrapperPriceTextProduct>{productDetail?.price}</WrapperPriceTextProduct>
+                    <WrapperPriceTextProduct>{productDetail?.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</WrapperPriceTextProduct>
                 </WrapperPriceProduct>
                 <WrapperAddressProduct>
                     <span style={{ paddingRight: '20px' }}>Giao đến:</span>

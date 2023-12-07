@@ -1,14 +1,15 @@
 import styled from "styled-components";
 
-export const WrapperLabelText = styled.h4`
+export const WrapperLabelText = styled.h1`
     color:rgb(56,56,61);
-    font-size:4px;
+    font-size:24px;
     font-weight:500;
 `
 export const WrapperTextValue = styled.span`
     color:rgb(56,56,61);
-    font-size:12px;
+    font-size:18px;
     font-weight:400;
+    border:1px solod #ccc;
 `
 export const WrapperContent = styled.span`
     display:flex;

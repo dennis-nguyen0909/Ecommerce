@@ -48,3 +48,13 @@ export const deleteManyProduct = async (ids, access_token) => {
     });
     return res.data;
 }
+export const getTypeProduct = async (type, page, limit) => {
+    const res = await axios.get(`http://localhost:3000/api/product/get-all-product?filter=type&filter=${type}&limit=${limit}&page=${page}`);
+    return res.data;
+}
+
+
+export const getAllTypeProduct = async () => {
+    const res = await axios.get(`http://localhost:3000/api/product/get-all-type`);
+    return res.data;
+}

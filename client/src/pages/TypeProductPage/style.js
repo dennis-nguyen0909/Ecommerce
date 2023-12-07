@@ -3,7 +3,7 @@ import { Col } from "antd"
 export const WrapperProduct = styled(Col)`
     display:flex;
     justify-content:center;
-    gap:15px;
+    gap:20px;
     margin-top:20px;
     flex-wrap:wrap;
 `

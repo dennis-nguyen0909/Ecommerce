@@ -1,8 +1,8 @@
-import { Button, Form, Input, Modal, Space, message } from 'antd'
+import { Button, Form, Input, Modal, Select, Space, message } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import { TableComponent } from '../TableComponent/TableComponent'
 import { InputComponent } from '../InputComponent/InputComponent';
-import { getBase64 } from '../../untils';
+import { getBase64, renderOptions } from '../../untils';
 import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
 import { useMutationHook } from '../../hooks/userMutationHook';
 import * as ProductService from '../../services/ProductService'
@@ -28,6 +28,7 @@ export const AdminProduct = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
+    const [typeSelect, setTypeSelect] = useState('')
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -47,6 +48,7 @@ export const AdminProduct = () => {
         rating: '',
         image: '',
         countInStock: '',
+        newType: ''
 
     })
     const [stateProductDetail, setStateProductDetail] = useState({
@@ -243,9 +245,18 @@ export const AdminProduct = () => {
         )
     }
     const onFinish = () => {
+        const stateProductUpdateNewType = {
+            name: stateProduct.name,
+            type: stateProduct.type === 'add_type' ? stateProduct.newType : stateProduct.type,
+            price: stateProduct.price,
+            description: stateProduct.description,
+            rating: stateProduct.rating,
+            image: stateProduct.image,
+            countInStock: stateProduct.countInStock,
+        }
         try {
             setLoading(true)
-            mutation.mutate(stateProduct)
+            mutation.mutate(stateProductUpdateNewType)
             queryClient.invalidateQueries({ queryKey: ['products'], queryFn: fetchGetAllProduct });
             setLoading(false)
         } catch (error) {
@@ -442,6 +453,23 @@ export const AdminProduct = () => {
         queryClient.invalidateQueries({ queryKey: ['products'], queryFn: fetchDelete })
         handleCancelDelete();
     }
+    const fetchGetAllTypeProduct = async () => {
+        const res = await ProductService.getAllTypeProduct();
+        return res.data;
+    }
+    const { data: typeProduct } = useQuery({ queryKey: ['type-products'], queryFn: fetchGetAllTypeProduct })
+    const handleChangeSelectType = (value) => {
+        // Giữ nguyên state product và cập nhật type =value chọn
+        setStateProduct({
+            ...stateProduct,
+            type: value
+        })
+        setStateProductDetail({
+            ...stateProductDetail,
+            type: value
+        })
+
+    }
     return (
         <div >
             <div style={{ margin: '10px 20px' }}>
@@ -516,8 +544,32 @@ export const AdminProduct = () => {
                             ]}
                         >
 
-                            <InputComponent value={stateProduct.type} onChange={handleOnChangeProduct} name="type" />
+                            <Select
+                                name="type"
+                                // defaultValue="lucy"
+                                value={stateProduct.type}
+                                style={{
+                                    width: 200,
+                                }}
+                                onChange={handleChangeSelectType}
+                                options={renderOptions(typeProduct)}
+
+                            />
                         </Form.Item>
+                        {stateProduct.type === 'add_type' &&
+                            <Form.Item
+                                label="New Type"
+                                name="newType"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input your type!',
+                                    },
+                                ]}
+                            >
+                                <InputComponent value={stateProduct.newType} onChange={handleOnChangeProduct} name="newType" />
+                            </Form.Item>
+                        }
                         <Form.Item
                             label="Rating"
                             name="rating"
@@ -644,8 +696,18 @@ export const AdminProduct = () => {
                                     message: 'Please input your type!',
                                 },
                             ]}
-                        >
 
+                        >
+                            < Select
+                                name="type"
+                                // defaultValue="lucy"
+                                style={{
+                                    width: 200,
+                                }}
+                                onChange={handleChangeSelectType}
+                                options={renderOptions(typeProduct)}
+
+                            />
                             <InputComponent value={stateProductDetail.type} onChange={handleOnChangeProductDetail} name="type" />
                         </Form.Item>
                         <Form.Item

@@ -39,3 +39,19 @@ export function getItem(label, key, icon, children, type) {
         type,
     };
 }
+export const renderOptions = (arr) => {
+    let result = [];
+    if (arr) {
+        result = arr?.map((opt) => {
+            return {
+                value: opt,
+                label: opt,
+            }
+        })
+    }
+    result.push({
+        label: 'Thêm type mới',
+        value: 'add_type'
+    })
+    return result;
+}

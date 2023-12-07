@@ -10,6 +10,7 @@ export const CardComponent = (props) => {
     const handleDetailProduct = (id) => {
         navigate(`/product-detail/${id}`)
     }
+    // const formattedPrice = price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
     return (
         <WrapperCardStyle
             hoverable
@@ -29,7 +30,7 @@ export const CardComponent = (props) => {
             </WrapperReportText>
             <WrapperPriceText>
                 <span style={{ marginRight: '10px' }}>
-                    {price.toLocaleString()}
+                    {price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                 </span>
                 <WrapperDiscountText>{discount || -5} %</WrapperDiscountText>
             </WrapperPriceText>
