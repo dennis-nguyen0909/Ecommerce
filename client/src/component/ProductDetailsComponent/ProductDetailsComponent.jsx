@@ -5,10 +5,15 @@ import { PlusOutlined, MinusOutlined } from '@ant-design/icons'
 import { ButtonComponent } from '../ButtonComponent/ButtonComponent'
 import * as ProductService from '../../services/ProductService'
 import { useQuery } from '@tanstack/react-query'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useLocation, useNavigate } from 'react-router-dom'
+import orderSlide, { addOrderProduct } from '../../redux/slides/orderSlide'
 export const ProductDetailsComponent = ({ idProduct }) => {
+    const navigate = useNavigate()
+    const location = useLocation()
     const [numProduct, setNumProduct] = useState(1);
     const user = useSelector((state) => state.user)
+    const dispatch = useDispatch()
     const fetchGetDetailProduct = async () => {
         const res = await ProductService.getDetailProduct(idProduct);
         return res.response;
@@ -25,6 +30,22 @@ export const ProductDetailsComponent = ({ idProduct }) => {
         } else {
             setNumProduct(numProduct - 1)
 
+        }
+    }
+    console.log('lo', location)
+    const handleOrderProduct = () => {
+        if (!user?.id) {
+            navigate('/login', { state: location?.pathname }) // khi chưa login bị đá sang /login và truyền path theo để khi login tự động vô trang cũ
+        } else {
+            dispatch(addOrderProduct({
+                orderItem: {
+                    name: productDetail?.name,
+                    amount: numProduct,
+                    image: productDetail?.image,
+                    price: productDetail?.price,
+                    product: productDetail?._id
+                }
+            }))
         }
     }
     return (
@@ -83,7 +104,7 @@ export const ProductDetailsComponent = ({ idProduct }) => {
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <ButtonComponent
-
+                        onClick={handleOrderProduct}
                         size={'40'}
                         styleButton={{
                             backgroundColor: "rgb(255,57,69)",

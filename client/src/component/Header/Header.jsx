@@ -5,9 +5,11 @@ import { UserOutlined, ShoppingCartOutlined, DribbbleOutlined, SearchOutlined } 
 import { WrapperAccount } from './style'
 import { ButtonInputSearch } from '../ButtonInputSearch/ButtonInputSearch'
 import * as UserService from '../../services/UserService'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
+import { PlusOutlined, MinusOutlined } from '@ant-design/icons'
+
 import { resetUser } from '../../redux/slides/userSlide'
 import { searchProduct } from '../../redux/slides/productSlide'
 import LoadingComponent from '../LoadingComponent/LoadingComponent'
@@ -15,8 +17,13 @@ import { Drawer } from 'antd';
 import { DrawerComponent } from '../DrawerComponent/DrawerComponent'
 import { InputComponent } from '../InputComponent/InputComponent'
 import { ButtonComponent } from '../ButtonComponent/ButtonComponent'
+import { CardComponent } from '../CardComponent/CardComponent'
+import { WrapperButtonQuality, WrapperQualityProduct } from '../ProductDetailsComponent/style'
+import { decreaseAmount, increaseAmount, removeOrderProduct } from '../../redux/slides/orderSlide'
 // import slider4 from '../../assets/images/slider4.jpg'
 export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
+    const location = useLocation()
+    const order = useSelector((state) => state.order)
     const [openSearch, setOpenSearch] = useState(false);
     const [openCart, setOpenCart] = useState(false);
     const [placement, setPlacement] = useState('left');
@@ -87,7 +94,34 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
         setOpenSearch(false)
         setSearch('');
     }
+    const handleOnChangeNum = (value) => {
+        console.log('value', value)
+    }
+    const handleChangeCount = (action, id) => {
+        console.log('iddddd', id)
+        if (action === 'increase') {
+            dispatch(increaseAmount(id))
+        } else {
+            dispatch(decreaseAmount(id))
+        }
+    }
+    console.log('order', order)
+    const handleDeleteOrder = (id) => {
+        dispatch(removeOrderProduct(id))
+    }
+    console.log('/user', user)
+    const handleNavigateOrderPage = () => {
 
+        if (!user?.id) {
+            navigate('/login', { state: location?.pathname }) // kh
+            setOpenCart(false)
+        } else {
+            navigate('/order')
+            setOpenCart(false)
+        }
+
+    }
+    console.log('1231', order)
     return (
         <div style={{ width: '100%' }}>
             <div style={{ backgroundColor: 'black', height: '30px', display: 'flex', alignItems: 'center', paddingLeft: '40px' }}>
@@ -147,7 +181,7 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                                 {!isHiddenCart && (
                                     <>
                                         <WrapperIcon>
-                                            <Badge count={4} size='small' >
+                                            <Badge count={order?.orderItems?.length} size='small' >
                                                 <ShoppingCartOutlined style={{ fontSize: "20px" }} onClick={showDrawerCart} />
                                             </Badge>
                                         </WrapperIcon>
@@ -204,8 +238,63 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                 onClose={onCloseCart}
                 open={openCart}
                 key={placement}
+                width={'600px'}
             >
-                <div>Giỏ Hàng</div>
+                <div style={{ display: 'flex', justifyContent: 'center', fontSize: '24px' }}>Giỏ Hàng</div>
+                {order?.orderItems?.length ? order?.orderItems?.map((item) => {
+                    return (
+                        <div style={{ width: '500px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderTop: '1px solid #ccc', marginBottom: '10px' }}>
+                            <div>
+                                <img width={'130px'} height={'130px'} objectFit={'cover'} src={item.image} />
+                            </div>
+                            <div style={{ padding: '0 10px' }}>
+                                <h3>Tên sản phẩm :{item?.name}</h3>
+                                <p>Giá :{item.price.toLocaleString()}</p>
+                                <p>Số lượng : {item?.amount}</p>
+                                <WrapperQualityProduct>
+                                    <WrapperButtonQuality>
+                                        <MinusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('decrease', item?.product)} />
+                                    </WrapperButtonQuality>
+                                    {/* <WrapperInputNumber defaultValue={1} size='small' value={numProduct} onChange={handleOnChangeNum} /> */}
+                                    <input defaultValue={item?.amount} value={item?.amount} onChange={handleOnChangeNum} style={{ width: '30px', border: 'transparent', textAlign: 'center', borderLeft: '1px solid #ccc', borderRight: '1px solid #ccc' }} />
+                                    <WrapperButtonQuality>
+                                        <PlusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('increase', item?.product)} />
+                                    </WrapperButtonQuality>
+                                </WrapperQualityProduct>
+                            </div>
+                            <div onClick={() => handleDeleteOrder(item?.product)}>Xóa</div>
+
+                        </div>
+
+                    )
+                }) : (
+                    <>
+                        <div style={{ width: '500px', height: '100px', display: 'flex', justifyContent: 'flex-start', borderTop: '1px solid #ccc', marginBottom: '10px' }}>
+                            <p>Giỏ Hàng Rỗng</p>
+                        </div>
+                    </>
+                )}
+                <div style={{ borderTop: '1px  solid #ccc', borderBottom: '1px solid #ccc' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <p>Tạm Tính</p>
+                        <p>vnd</p>
+                    </div>
+                    <ButtonComponent
+                        onClick={handleNavigateOrderPage}
+                        size={'40'}
+                        styleButton={{
+                            backgroundColor: "rgb(71,71,71)",
+                            height: '48px',
+                            width: '100%',
+                            border: 'none',
+                            borderRadius: "12px",
+                            margin: "20px 0"
+                        }}
+                        textButton={"Thanh Toán"}
+                        styleTextButton={{ color: "#fff", fontSize: '15px', fontWeight: 700 }}
+                    >
+                    </ButtonComponent>
+                </div>
             </Drawer>
         </div>
     )

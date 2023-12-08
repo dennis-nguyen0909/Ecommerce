@@ -18,6 +18,7 @@ export const HomePage = () => {
     const searchDebounce = useDebounce(searchProduct, 1000)
     const [limit, setLimit] = useState(3)
     const [typeProduct, setTypeProduct] = useState([])
+
     const fetchProduct = async (context) => {
         const limit = context?.queryKey && context?.queryKey[1]
         const search = ''

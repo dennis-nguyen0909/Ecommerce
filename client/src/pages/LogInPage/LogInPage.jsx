@@ -5,7 +5,7 @@ import { ButtonComponent } from '../../component/ButtonComponent/ButtonComponent
 import { Image } from 'antd'
 import logo from '../../assets/images/signup.jpeg'
 import { EyeFilled, EyeInvisibleFilled } from '@ant-design/icons'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useMutationHook } from '../../hooks/userMutationHook'
 import * as UserService from '../../services/UserService'
 import LoadingComponent from '../../component/LoadingComponent/LoadingComponent'
@@ -14,6 +14,7 @@ import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from 'react-redux'
 import { updateUser } from '../../redux/slides/userSlide'
 export const LogInPage = () => {
+    const location = useLocation()
     const user = useSelector(state => state.user)
     const [isShowPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
@@ -34,8 +35,9 @@ export const LogInPage = () => {
 
         }
     }, [user])
+    console.log('laaa', location)
     useEffect(() => {
-        console.log('data', data?.message)
+
         if (+data?.message?.EC === 0) {
             message.error(data?.message?.message)
             return;
@@ -48,8 +50,13 @@ export const LogInPage = () => {
                     handleGetDetailUser(decoded?.id, access_token)
                 }
             }
+            if (location?.state) {
+                navigate(location?.state)
+            } else {
+                navigate('/')
+            }
             message.success("Đăng nhập thành công !")
-            navigate('/')
+
         }
     }, [isSuccess])
     const handleGetDetailUser = async (id, access_token) => {
