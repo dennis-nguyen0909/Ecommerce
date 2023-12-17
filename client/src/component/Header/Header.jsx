@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Row, Col, Badge, Popover, Button } from 'antd'
+import { Row, Col, Badge, Popover, Button, message } from 'antd'
 import { WrapperHeader, WrapperIcon, WrapperLogoHeader, WrapperLogout } from './style'
 import { UserOutlined, ShoppingCartOutlined, DribbbleOutlined, SearchOutlined } from '@ant-design/icons'
 import { WrapperAccount } from './style'
@@ -103,11 +103,19 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const handleOnChangeNum = (value) => {
         console.log('value', value)
     }
-    const handleChangeCount = (action, id) => {
-        if (action === 'increase') {
-            dispatch(increaseAmount(id))
+    const handleChangeCount = (value, id, limited) => {
+        if (value === 'increase') {
+            if (!limited) {
+                dispatch(increaseAmount(id))
+            } else {
+                message.error("Quá giới hạn sản phẩm")
+            }
         } else {
-            dispatch(decreaseAmount(id))
+            if (!limited) {
+                dispatch(decreaseAmount(id))
+            } else {
+                message.error("Sản phẩm tối thiểu là 1")
+            }
         }
     }
     const handleDeleteOrder = (id) => {
@@ -245,12 +253,12 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                                 <p>Size :{item?.size}</p>
                                 <WrapperQualityProduct>
                                     <WrapperButtonQuality>
-                                        <MinusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('decrease', item?.product)} />
+                                        <MinusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('decrease', item?.product, item?.amount === 1)} />
                                     </WrapperButtonQuality>
                                     {/* <WrapperInputNumber defaultValue={1} size='small' value={numProduct} onChange={handleOnChangeNum} /> */}
                                     <input defaultValue={item?.amount} value={item?.amount} onChange={handleOnChangeNum} style={{ width: '30px', border: 'transparent', textAlign: 'center', borderLeft: '1px solid #ccc', borderRight: '1px solid #ccc' }} />
                                     <WrapperButtonQuality>
-                                        <PlusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('increase', item?.product)} />
+                                        <PlusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('increase', item?.product, item.amount === item.countInStock)} />
                                     </WrapperButtonQuality>
                                 </WrapperQualityProduct>
                             </div>

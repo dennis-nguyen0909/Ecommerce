@@ -421,7 +421,7 @@ export const AdminProduct = () => {
                 formModal.setFieldsValue(initial())
             }
         }
-    }, [formModal, stateProductDetail])
+    }, [formModal, stateProductDetail, isModalOpen])
     const handleOnChangeProductDetail = (e) => {
         setStateProductDetail({
             ...stateProductDetail,

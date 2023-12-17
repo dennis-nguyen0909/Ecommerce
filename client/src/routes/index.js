@@ -12,6 +12,7 @@ import { TypeProductPage } from "../pages/TypeProductPage/TypeProductPage";
 import { PaymentPage } from '../pages/PaymentPage/PaymentPage'
 import { OrderSuccessPage } from "../pages/OrderSuccessPage/OrderSuccessPage";
 import { MyOrderPage } from "../pages/MyOrderPage/MyOrderPage";
+import { MyOrderDetailsPage } from "../pages/MyOrderDetailsPage/MyOrderDetailsPage";
 export const routes = [
     {
         path: '/',
@@ -21,6 +22,11 @@ export const routes = [
     {
         path: '/payment',
         page: PaymentPage,
+        isShowHeader: true
+    },
+    {
+        path: '/my-order-detail/:id',
+        page: MyOrderDetailsPage,
         isShowHeader: true
     },
     {

@@ -12,6 +12,7 @@ const ProductRouter = require('./routes/ProductRouter');
 const Cloudinary = require('./routes/Cloudinary')
 const cloudinary = require('cloudinary');
 const OrderRouter = require('./routes/OrderRouter');
+const PaymentRouter = require('./routes/PaymentRouter');
 
 cloudinary.config({
     cloud_name: 'dxtz2g7ga',
@@ -32,6 +33,7 @@ UserRouter(app);
 ProductRouter(app);
 Cloudinary(app);
 OrderRouter(app);
+PaymentRouter(app);
 mongoose.connect(process.env.MONGODB, {
     useNewUrlParser: true,
     useUnifiedTopology: true

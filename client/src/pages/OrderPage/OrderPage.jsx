@@ -70,11 +70,19 @@ export const OrderPage = () => {
             districts: selectedCityData?.name
         })
     }
-    const handleChangeCount = (value, id) => {
+    const handleChangeCount = (value, id, limited) => {
         if (value === 'increase') {
-            dispatch(increaseAmount(id))
+            if (!limited) {
+                dispatch(increaseAmount(id))
+            } else {
+                message.error("Quá giới hạn sản phẩm")
+            }
         } else {
-            dispatch(decreaseAmount(id))
+            if (!limited) {
+                dispatch(decreaseAmount(id))
+            } else {
+                message.error("Sản phẩm tối thiểu là 1")
+            }
         }
     }
     const handleOnChangeNum = () => {
@@ -134,9 +142,8 @@ export const OrderPage = () => {
             return 30000
         }
     }, [priceMemo])
-    console.log('price', deliveryPrice)
     const totalPriceAll = useMemo(() => {
-        return Number(priceMemo) - Number(priceDiscount) + Number(deliveryPrice)
+        return Number(priceMemo) - Number(priceDiscount) + Number(deliveryPrice) - Number(priceMemo * priceDiscount / 100)
     }, [priceMemo, priceDiscount, deliveryPrice])
     useEffect(() => {
         dispatch(selectedOrder({ selectedCheck }))
@@ -305,7 +312,7 @@ export const OrderPage = () => {
                         {/* <LoadingComponent > */}
                         <div style={{ margin: '20px 20px', border: '1px solid #ccc', padding: '20px 40px', }}>
                             <div>Tạm tính :{covertPrice(priceMemo)}</div>
-                            <div>Giảm giá : {covertPrice(priceDiscount)}</div>
+                            <div>Giảm giá : {priceDiscount}%</div>
                             <div>Phí giao hàng :{covertPrice(deliveryPrice)}</div>
                             <div>Tổng tiền :{covertPrice(totalPriceAll)}</div>
                         </div>
@@ -352,12 +359,12 @@ export const OrderPage = () => {
                                             <p>Số lượng : {item?.amount}</p>
                                             <WrapperQualityProduct>
                                                 <WrapperButtonQuality>
-                                                    <MinusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('decrease', item?.product)} />
+                                                    <MinusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('decrease', item?.product, item?.amount === 1)} />
                                                 </WrapperButtonQuality>
                                                 {/* <WrapperInputNumber defaultValue={1} size='small' value={numProduct} onChange={handleOnChangeNum} /> */}
-                                                <input defaultValue={item?.amount} value={item?.amount} onChange={handleOnChangeNum} style={{ width: '30px', border: 'transparent', textAlign: 'center', borderLeft: '1px solid #ccc', borderRight: '1px solid #ccc' }} />
+                                                <input defaultValue={item?.amount} value={item?.amount} min={1} max={item?.countInStock} onChange={handleOnChangeNum} style={{ width: '30px', border: 'transparent', textAlign: 'center', borderLeft: '1px solid #ccc', borderRight: '1px solid #ccc' }} />
                                                 <WrapperButtonQuality>
-                                                    <PlusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('increase', item?.product)} />
+                                                    <PlusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('increase', item?.product, item?.amount === item?.countInStock)} />
                                                 </WrapperButtonQuality>
                                             </WrapperQualityProduct>
                                             <p>Giá :{covertPrice(item?.price)}</p>

@@ -57,7 +57,8 @@ export const ProductDetailsComponent = ({ idProduct }) => {
                         price: productDetail?.price,
                         size: selectedSize,
                         discount: productDetail?.discount,
-                        product: productDetail?._id
+                        product: productDetail?._id,
+                        countInStock: productDetail?.countInStock
                     }
                 }))
             }

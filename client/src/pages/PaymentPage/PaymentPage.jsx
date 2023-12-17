@@ -5,10 +5,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ButtonComponent } from '../../component/ButtonComponent/ButtonComponent'
 import LoadingComponent from '../../component/LoadingComponent/LoadingComponent'
 import { InputForm, WrapperDivStyle } from './style'
-
+import { PayPalButton } from "react-paypal-button-v2";
 import { decreaseAmount, increaseAmount, removeAllOrderProduct, removeOrderProduct, selectedOrder, totalAllProduct, resetOrder } from '../../redux/slides/orderSlide'
 import { covertPrice } from '../../untils'
 import * as OrderService from '../../services/OrderService'
+import * as PaymentService from '../../services/PaymentService'
 import { useMutationHook } from '../../hooks/userMutationHook'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
@@ -23,6 +24,7 @@ export const PaymentPage = () => {
     const user = useSelector((state) => state.user)
     const order = useSelector((state) => state.order)
     const dispatch = useDispatch()
+    const [sdk, setSdk] = useState(false)
 
     const [loading, isLoadingAdd] = useState(false)
 
@@ -94,7 +96,7 @@ export const PaymentPage = () => {
         }
     }, [priceMemo])
     const totalPriceAll = useMemo(() => {
-        return Number(priceMemo) - Number(priceDiscount) + Number(deliveryPrice)
+        return Number(priceMemo) - Number(priceDiscount) + Number(deliveryPrice) - Number(priceMemo * priceDiscount / 100)
     }, [priceMemo, priceDiscount, deliveryPrice])
 
     const handlePayment = async (e) => {
@@ -158,7 +160,6 @@ export const PaymentPage = () => {
                 order?.orderItemsSelected?.forEach(element => {
                     arrOrder.push(element.product) // push id vao mang
                 });
-                console.log('arr', arrOrder.product)
                 dispatch(removeAllOrderProduct({ selectedCheck: arrOrder }))
                 message.success("Đặt Hàng Thành Công !")
                 navigate('/order-success', {
@@ -178,9 +179,61 @@ export const PaymentPage = () => {
         }
 
     }
+    const fetchClientIdPaypal = async () => {
+        const { data } = await PaymentService.getClientId();
+        const script = document.createElement('script');
+        script.type = 'text/javascript'
+        script.src = `https://www.paypal.com/sdk/js?client-id=${data}`
+        script.async = true;
+        script.onload = () => {
+            setSdk(true)// nếu đang load thì true
+        }
+        document.body.appendChild(script)
+    }
+    useEffect(() => {
+        if (!window.paypal) {
+            fetchClientIdPaypal();
+        } else {
+            setSdk(true)
+        }
+    }, [])
+    const onSuccessPaypal = async (details, data) => {
+        const result = await addOrder({
+            token: user?.access_token,
+            orderItems: order?.orderItemsSelected,
+            fullName: user?.name, address: user?.address + " " + user?.ward + " " + user?.districts, phone: user?.phone, city: user?.city,
+            paymentMethod: payment,
+            itemsPrice: priceMemo,
+            shippingPrice: deliveryPrice,
+            totalPrice: totalPriceAll,
+            user: user?.id,
+            isPaid: true,
+            PaidAt: details?.update_time
+        })
+        if (+result?.EC === 1) {
+            const arrOrder = []
+            order?.orderItemsSelected?.forEach(element => {
+                arrOrder.push(element.product) // push id vao mang
+            });
+            message.success("Đặt Hàng Thành Công !")
+            dispatch(removeAllOrderProduct({ selectedCheck: arrOrder }))
+            navigate('/order-success', {
+                state: {
+                    delivery,
+                    payment,
+                    orders: order?.orderItemsSelected,
+                    totalPrice: totalPriceAll
+                }
+            })
+        }
+        console.log('result', result)
+
+        console.log('details', details)
+        console.log('data', totalPriceAll)
+
+    }
 
 
-    console.log('loading', isLoadingAdd)
     return (
         <Row style={{ marginTop: '80px' }} >
 
@@ -226,26 +279,43 @@ export const PaymentPage = () => {
                     {/* <LoadingComponent > */}
                     <div style={{ margin: '20px 20px', border: '1px solid #ccc', padding: '20px 40px', }}>
                         <div>Tạm tính :{covertPrice(priceMemo)}</div>
-                        <div>Giảm giá : {covertPrice(priceDiscount)}</div>
+                        <div>Giảm giá : {priceDiscount}%</div>
                         <div>Phí giao hàng :{covertPrice(deliveryPrice)}</div>
                         <div>Tổng tiền :{covertPrice(totalPriceAll)}</div>
                     </div>
-                    <LoadingComponent isLoading={loading} delay={2000} >
-                        <ButtonComponent
-                            onClick={handleAddOrder}
-                            size={'40'}
-                            styleButton={{
-                                backgroundColor: "rgb(71,71,71)",
-                                height: '48px',
-                                width: '100%',
-                                border: 'none',
-                                borderRadius: "12px",
-                                margin: "20px 0"
-                            }}
-                            textButton={"Đặt Hàng"}
-                            styleTextButton={{ color: "#fff", fontSize: '15px', fontWeight: 700 }}
-                        />
-                    </LoadingComponent>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        {payment === "paypal" && sdk ? (
+                            <div style={{ with: '500px' }}>
+                                <PayPalButton
+                                    amount={(totalPriceAll / 24000).toFixed(2)}
+                                    shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
+                                    onSuccess={onSuccessPaypal}
+                                    onError={(err) => {
+                                        alert(err)
+                                    }}
+                                />
+                            </div>
+                        ) : (
+                            <div style={{ width: '500px' }}>
+                                <LoadingComponent isLoading={loading} delay={2000} >
+                                    <ButtonComponent
+                                        onClick={handleAddOrder}
+                                        size={'40'}
+                                        styleButton={{
+                                            backgroundColor: "rgb(71,71,71)",
+                                            height: '48px',
+                                            width: '100%',
+                                            border: 'none',
+                                            borderRadius: "12px",
+                                            margin: "20px 0"
+                                        }}
+                                        textButton={"Đặt Hàng"}
+                                        styleTextButton={{ color: "#fff", fontSize: '15px', fontWeight: 700 }}
+                                    />
+                                </LoadingComponent>
+                            </div>
+                        )}
+                    </div>
                     {/* </LoadingComponent> */}
                 </Form>
             </Col>
@@ -261,7 +331,7 @@ export const PaymentPage = () => {
                     <h1>Chọn phương thức thanh toán</h1>
                     <Radio.Group onChange={handlePayment} value={payment}>
                         <Radio value="later_money"> Thanh toán tiền mặt khi nhận hàng</Radio>
-                        <Radio value="paypal"> Thanh toán tiền bằng paypal</Radio>
+                        <Radio value="paypal">Thanh toán bằng paypal</Radio>
                     </Radio.Group>
                 </div>
 
