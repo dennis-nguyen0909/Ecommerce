@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Button, Col, Image, InputNumber, Rate, Row } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Button, Col, Form, Image, InputNumber, Rate, Row, message } from 'antd'
 import { WrapperAddressProduct, WrapperButtonQuality, WrapperImageColSmall, WrapperImageSmall, WrapperInputNumber, WrapperPriceProduct, WrapperPriceTextProduct, WrapperQualityBtn, WrapperQualityProduct, WrapperStyleNameProduct, WrapperStyleTextSell } from './style'
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons'
 import { ButtonComponent } from '../ButtonComponent/ButtonComponent'
@@ -8,10 +8,12 @@ import { useQuery } from '@tanstack/react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import orderSlide, { addOrderProduct } from '../../redux/slides/orderSlide'
+import { covertPrice } from '../../untils'
 export const ProductDetailsComponent = ({ idProduct }) => {
     const navigate = useNavigate()
     const location = useLocation()
     const [numProduct, setNumProduct] = useState(1);
+    const [selectedSize, setSelectedSize] = useState('')
     const user = useSelector((state) => state.user)
     const dispatch = useDispatch()
     const fetchGetDetailProduct = async () => {
@@ -21,6 +23,7 @@ export const ProductDetailsComponent = ({ idProduct }) => {
     }
     const { data } = useQuery({ queryKey: ['product-detail'], queryFn: fetchGetDetailProduct })
     const productDetail = data?.data
+
     const handleOnChangeNum = (value) => {
         setNumProduct(Number(value))
     }
@@ -32,22 +35,42 @@ export const ProductDetailsComponent = ({ idProduct }) => {
 
         }
     }
-    console.log('lo', location)
+    console.log('1231', productDetail?.discount)
+    console.log('size', selectedSize)
+    console.log('so', numProduct)
     const handleOrderProduct = () => {
         if (!user?.id) {
             navigate('/login', { state: location?.pathname }) // khi chưa login bị đá sang /login và truyền path theo để khi login tự động vô trang cũ
         } else {
-            dispatch(addOrderProduct({
-                orderItem: {
-                    name: productDetail?.name,
-                    amount: numProduct,
-                    image: productDetail?.image,
-                    price: productDetail?.price,
-                    product: productDetail?._id
-                }
-            }))
+            if (productDetail?.countInStock <= 0 || numProduct > productDetail?.countInStock) {
+                message.error("Sản phẩm này đã hết vui lòng chọn sản phẩm khác !")
+            } else if (!selectedSize) {
+                message.error("Vui lòng chọn size !")
+
+            }
+            else {
+                dispatch(addOrderProduct({
+                    orderItem: {
+                        name: productDetail?.name,
+                        amount: numProduct,
+                        image: productDetail?.image,
+                        price: productDetail?.price,
+                        size: selectedSize,
+                        discount: productDetail?.discount,
+                        product: productDetail?._id
+                    }
+                }))
+            }
         }
     }
+    const onChangeSize = (e) => {
+        setSelectedSize(e);
+    }
+    // useEffect(() => {
+    //     if (productDetail?.countInStock <= 0) {
+    //         message.error("Sản phẩm này đã hết vui lòng chọn sản phẩm khác !")
+    //     }
+    // }, [productDetail?.countInStock])
     return (
         <Row style={{ padding: '16px', backgroundColor: "#fff", borderRadius: '4px' }}>
             <Col span={10} style={{ borderRight: '1px solid #solid', paddingRight: '8px' }}>
@@ -76,18 +99,21 @@ export const ProductDetailsComponent = ({ idProduct }) => {
             </Col >
             <Col span={14} style={{ padding: ' 0 40px' }}>
                 <WrapperStyleNameProduct>{productDetail?.name}</WrapperStyleNameProduct>
-                <div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <Rate allowHalf defaultValue={productDetail?.rating} />
-                    <WrapperStyleTextSell>Đã bán | 1000+</WrapperStyleTextSell>
+                    <WrapperStyleTextSell>Đã bán {productDetail?.selled || 0}</WrapperStyleTextSell>
                 </div>
                 <WrapperPriceProduct>
-                    <WrapperPriceTextProduct>{productDetail?.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</WrapperPriceTextProduct>
+                    <WrapperPriceTextProduct>{covertPrice(productDetail?.price)}</WrapperPriceTextProduct>
                 </WrapperPriceProduct>
                 <WrapperAddressProduct>
                     <span style={{ paddingRight: '20px' }}>Giao đến:</span>
-                    <span className='address'>{user?.address}</span> -
+                    <span className='address'>{user?.address + " " + user?.ward + " " + user?.districts + " " + user?.city}</span> -
                     <span className='change-address'> Đổi địa chỉ</span>
                 </WrapperAddressProduct>
+                <div>
+                    <span>HÀNG CÒN SẴN: {productDetail?.countInStock}</span>
+                </div>
                 <div style={{ margin: '10px 0 20px', padding: '10px 0', borderTop: '1px solid #ccc', borderBottom: '1px solid #ccc' }}>
                     <div style={{ margin: "6px 0" }}>Số lượng</div>
                     <WrapperQualityProduct>
@@ -101,6 +127,30 @@ export const ProductDetailsComponent = ({ idProduct }) => {
                         </WrapperButtonQuality>
 
                     </WrapperQualityProduct>
+                </div>
+                <div>
+                    <Form.Item
+                        label="Size"
+                        name="size"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your size!',
+                            },
+                        ]}
+                    >
+
+                        <p>{productDetail?.size.map((item) => {
+                            return (
+                                <Button key={item} style={{
+                                    padding: '0 10px', margin: '0 10px',
+                                    // backgroundColor: selectedSize == item ? "red" : '#fff',
+                                    border: selectedSize == item ? "2px solid black" : "1px solid #ccc"
+
+                                }} onClick={() => onChangeSize(item)} >{item}</Button>
+                            )
+                        })}</p>
+                    </Form.Item>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <ButtonComponent

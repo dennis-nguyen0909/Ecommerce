@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Row, Col, Badge, Popover } from 'antd'
-import { WrapperHeader, WrapperIcon, WrapperLogout } from './style'
+import { Row, Col, Badge, Popover, Button } from 'antd'
+import { WrapperHeader, WrapperIcon, WrapperLogoHeader, WrapperLogout } from './style'
 import { UserOutlined, ShoppingCartOutlined, DribbbleOutlined, SearchOutlined } from '@ant-design/icons'
 import { WrapperAccount } from './style'
 import { ButtonInputSearch } from '../ButtonInputSearch/ButtonInputSearch'
@@ -20,6 +20,7 @@ import { ButtonComponent } from '../ButtonComponent/ButtonComponent'
 import { CardComponent } from '../CardComponent/CardComponent'
 import { WrapperButtonQuality, WrapperQualityProduct } from '../ProductDetailsComponent/style'
 import { decreaseAmount, increaseAmount, removeOrderProduct } from '../../redux/slides/orderSlide'
+import { covertPrice } from '../../untils'
 // import slider4 from '../../assets/images/slider4.jpg'
 export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const location = useLocation()
@@ -75,10 +76,15 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const handleNavigateAdmin = () => {
         navigate('/system/admin')
     }
+    const handleNavigateMyOrder = () => {
+        navigate('/my-order')
+    }
     const content = (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
             <WrapperLogout onClick={handleLogout}>Đăng xuất</WrapperLogout>
             <WrapperLogout onClick={handleNavigateProfile}>Thông tin người dùng</WrapperLogout>
+            <WrapperLogout onClick={handleNavigateMyOrder}>Đơn hàng của tôi</WrapperLogout>
+
             {user?.isAdmin && (
                 <WrapperLogout onClick={handleNavigateAdmin}>Quản lý hệ thống</WrapperLogout>
             )}
@@ -98,18 +104,15 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
         console.log('value', value)
     }
     const handleChangeCount = (action, id) => {
-        console.log('iddddd', id)
         if (action === 'increase') {
             dispatch(increaseAmount(id))
         } else {
             dispatch(decreaseAmount(id))
         }
     }
-    console.log('order', order)
     const handleDeleteOrder = (id) => {
         dispatch(removeOrderProduct(id))
     }
-    console.log('/user', user)
     const handleNavigateOrderPage = () => {
 
         if (!user?.id) {
@@ -121,43 +124,27 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
         }
 
     }
-    console.log('1231', order)
     return (
         <div style={{ width: '100%' }}>
             <div style={{ backgroundColor: 'black', height: '30px', display: 'flex', alignItems: 'center', paddingLeft: '40px' }}>
                 <DribbbleOutlined style={{ color: '#fff', }} />
             </div>
             <WrapperHeader>
-                <Col onClick={() => navigate('/')} span={4} style={{ display: 'flex', alignItems: "center", cursor: 'pointer' }} >
-                    {/* <WrapperImageLogo width={'45px'} height={'45px'} src={logo} preview={false} /> */}
-                    {/* <WrapperText>
-                        SHOP md
-                    </WrapperText> */}
-                    <div style={{ backgroundColor: 'black', color: 'white', width: '180px', height: '35px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '18px' }}>
+                {/* <WrapperLogoHeader>
+                    Sneaker Asia
+                </WrapperLogoHeader> */}
+                <Col onClick={() => navigate('/')} span={10}>
+                    <WrapperLogoHeader>
                         Sneaker Asia
-                    </div>
+                    </WrapperLogoHeader>
                 </Col>
-                {/* <Col span={1} >
-                    {!isHiddenSearch && (
-
-                        <ButtonInputSearch
-                            placeholder="Tìm kiếm sản phẩm ...."
-                            textButton="Tìm kiếm"
-                            size="large"
-
-                        // onSearch={onSearch}
-                        />
-
-                    )}
-
-                </Col> */}
                 <Col span={5} style={{ position: 'absolute', right: '50px', display: 'flex', gap: '54px', alignItems: 'center' }}>
                     <LoadingComponent isLoading={loading}>
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px' }}>
                             <WrapperIcon>
                                 {!isHiddenSearch && <SearchOutlined style={{ fontSize: '20px' }} onClick={showDrawerSearch} />}
                             </WrapperIcon>
-                            <WrapperAccount >
+                            <WrapperAccount className='hidden-on-mobile'>
                                 {user?.avatar
                                     ? (
                                         <img src={userAvatar} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />)
@@ -171,24 +158,25 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                                             <div style={{ padding: '0 10px', textDecoration: 'underline' }}>{userName?.length ? userName : user?.email}</div>
                                         </Popover>
                                     </>
-                                    : <div>
+                                    :
+                                    <div>
                                     </div>
 
                                 }
 
+                                <div className='hidden-on-mobile' style={{ display: 'flex', justifyContent: "center", alignItems: "center" }}>
+                                    {!isHiddenCart && (
+                                        <>
+                                            <WrapperIcon>
+                                                <Badge count={order?.orderItems?.length} size='small' >
+                                                    <ShoppingCartOutlined style={{ fontSize: "20px" }} onClick={showDrawerCart} />
+                                                </Badge>
+                                            </WrapperIcon>
+                                            {/* <WrapperTextSmall>Giỏ Hàng</WrapperTextSmall> */}
+                                        </>
+                                    )}
+                                </div>
                             </WrapperAccount>
-                            <div style={{ display: 'flex', justifyContent: "center", alignItems: "center" }}>
-                                {!isHiddenCart && (
-                                    <>
-                                        <WrapperIcon>
-                                            <Badge count={order?.orderItems?.length} size='small' >
-                                                <ShoppingCartOutlined style={{ fontSize: "20px" }} onClick={showDrawerCart} />
-                                            </Badge>
-                                        </WrapperIcon>
-                                        {/* <WrapperTextSmall>Giỏ Hàng</WrapperTextSmall> */}
-                                    </>
-                                )}
-                            </div>
                         </div>
                     </LoadingComponent>
                 </Col>
@@ -240,7 +228,10 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                 key={placement}
                 width={'600px'}
             >
-                <div style={{ display: 'flex', justifyContent: 'center', fontSize: '24px' }}>Giỏ Hàng</div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '24px', padding: '10px 0', alignItems: 'center' }}>
+                    <h3>Giỏ Hàng</h3>
+                    <Button onClick={onCloseCart}>X</Button>
+                </div>
                 {order?.orderItems?.length ? order?.orderItems?.map((item) => {
                     return (
                         <div style={{ width: '500px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderTop: '1px solid #ccc', marginBottom: '10px' }}>
@@ -249,8 +240,9 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                             </div>
                             <div style={{ padding: '0 10px' }}>
                                 <h3>Tên sản phẩm :{item?.name}</h3>
-                                <p>Giá :{item.price.toLocaleString()}</p>
+                                <p>Giá :{covertPrice(item?.price)}</p>
                                 <p>Số lượng : {item?.amount}</p>
+                                <p>Size :{item?.size}</p>
                                 <WrapperQualityProduct>
                                     <WrapperButtonQuality>
                                         <MinusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('decrease', item?.product)} />
@@ -276,7 +268,7 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                 )}
                 <div style={{ borderTop: '1px  solid #ccc', borderBottom: '1px solid #ccc' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <p>Tạm Tính</p>
+                        <p>Tạm Tính { }</p>
                         <p>vnd</p>
                     </div>
                     <ButtonComponent

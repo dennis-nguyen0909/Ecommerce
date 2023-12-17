@@ -20,15 +20,18 @@ export const SignUpPage = () => {
 
     const mutation = useMutationHook(
         data => UserService.signUp(data)
+
     )
 
+
     const { data, isPending, isSuccess, isError } = mutation
-    console.log('susccess', isSuccess);
-    console.log('error', isError);
     useEffect(() => {
-        if (isSuccess) {
+        if (data?.message?.status === 'Ok') {
             message.success("Đăng ký thành công !")
             handleNavigateLogin()
+        }
+        if (data?.message?.status === "Error") {
+            message.error(data?.message)
         }
     }, [isSuccess])
 
@@ -45,6 +48,7 @@ export const SignUpPage = () => {
         setConfirmPassword(value);
     }
     const handleSignUp = () => {
+
         mutation.mutate({
             email, password, confirmPassword
         })

@@ -7,7 +7,7 @@ export const WrapperDivText = styled.div`
     padding: 0 10px;
     position: relative;
     text-decoration: none;
-    color:rgb(128,128,128);
+    color:black;
     &::before,
     &::after {
         content: '';

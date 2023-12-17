@@ -20,6 +20,35 @@ export const WrapperText = styled.span`
     
 
 `
+export const WrapperLogoHeader = styled.div`
+    margin-left:140px;
+    cursor:pointer;
+    max-width:200px;
+    background-color: black;
+    color: white; 
+    width: 100%;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold; 
+    font-size: 18px; 
+    @media (max-width: 800px) {
+          width: 100%; /* Adjust the width as needed */
+          margin-left:0px;
+          max-width:none;
+          .hidden-on-mobile {
+            display: none;
+          }
+        
+    }
+    @media (max-width: 768px) {
+        .hidden-on-mobile {
+          display: none;
+        }
+      }
+    
+`
 export const WrapperAccount = styled.div`
     cursor:pointer;
     display:flex;

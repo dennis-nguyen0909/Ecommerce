@@ -35,9 +35,8 @@ export const LogInPage = () => {
 
         }
     }, [user])
-    console.log('laaa', location)
-    useEffect(() => {
 
+    useEffect(() => {
         if (+data?.message?.EC === 0) {
             message.error(data?.message?.message)
             return;
@@ -78,6 +77,9 @@ export const LogInPage = () => {
             email, password
         })
     }
+    const handleMessage = (title) => {
+        message.error(message)
+    }
     return (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "#ccc", height: '100vh' }}>
             <div style={{ width: "800px", height: "445px", borderRadius: "6px", background: "#fff", display: 'flex', }}>
@@ -100,7 +102,7 @@ export const LogInPage = () => {
                             </span>
                             <InputForm label="Mật khẩu" placeholder="*********" type={isShowPassword ? "text" : "password"} value={password} onChange={handleOnChangePassword} />
                         </div>
-                        {data?.status === "Error" && <span style={{ color: "red" }}>{data?.message}</span>}
+                        {/* {data?.status === "Error" && <span style={{ color: "red" }}>{data?.message}</span>} */}
                         {data?.message.status === "Error" && <span style={{ color: "red" }}>{data?.message.message}</span>}
                         <LoadingComponent isLoading={isPending}>
                             <ButtonComponent

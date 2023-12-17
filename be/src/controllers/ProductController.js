@@ -1,16 +1,14 @@
 const ProductService = require("../services/ProductService")
 const createProduct = async (req, res) => {
     try {
-        const { name, image, type, price, countInStock, rating, description } = req.body
-
-        if (!name || !image || !type || !price || !countInStock || !rating) {
+        const { name, image, type, price, countInStock, rating, description, discount } = req.body
+        if (!name || !image || !type || !price || !countInStock || !rating || !discount) {
             return res.status(404).json({
                 status: 'Error',
                 message: "Vui lòng nhập đầy đủ"
             })
         }
         const response = await ProductService.createProduct(req.body);
-
         return res.status(200).json({
             status: 'Ok',
             data: response
@@ -41,7 +39,6 @@ const updateProduct = async (req, res) => {
         })
     }
 }
-
 const deleteProduct = async (req, res) => {
     try {
         const idProduct = req.params.id;

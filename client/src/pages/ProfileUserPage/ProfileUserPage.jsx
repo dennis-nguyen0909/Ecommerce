@@ -96,7 +96,6 @@ export const ProfileUserPage = () => {
         }
     }, [isSuccess, isError])
     const handleUpdate = (e) => {
-        console.log(email, name, phone, address, isAdmin, avatar)
         mutation.mutate({
             id: user?.id, name, phone, address, avatar, access_token: user?.access_token
         })

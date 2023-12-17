@@ -5,7 +5,6 @@ import { useLocation } from 'react-router-dom'
 
 export const NavbarComponent = ({ types }) => {
     const location = useLocation()
-    console.log('types',)
     const onChange = () => {
 
     }

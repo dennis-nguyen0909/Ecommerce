@@ -1,19 +1,20 @@
 import React, { Fragment, useState } from 'react'
 import { NavbarComponent } from '../../component/NavbarComponent/NavbarComponent'
-import { CardComponent } from '../../component/CardComponent/CardComponent'
-import { Col, Pagination, Row } from 'antd'
+import { Button, Col, Pagination, Row } from 'antd'
 import { WrapperNavbar, WrapperProduct } from './style'
 import { useLocation } from 'react-router-dom'
 import * as ProductService from '../../services/ProductService'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
+import { CardComponentPageTypeProduct } from '../../component/CardComponentPageTypeProduct/CardComponent'
 export const TypeProductPage = () => {
     const [stateProductType, setStateProductType] = useState([])
     const [type, setType] = useState([])
     const [panigate, setPanigate] = useState({
+        pageCurrent: 0,
         page: 0,
-        limit: 2,
-        total: 1
+        limit: 4,
+        total: 0
     })
     const location = useLocation()
 
@@ -22,6 +23,7 @@ export const TypeProductPage = () => {
         setStateProductType(res)
         setPanigate({
             ...panigate,
+            pageCurrent: res?.pageCurrent,
             total: res?.totalPage
         })
     }
@@ -38,8 +40,24 @@ export const TypeProductPage = () => {
         fetchAllProductType();
     }, [])
     const onChange = (current, pageSize) => {
-        console.log('pageSize', pageSize)
         setPanigate({ ...panigate, page: current - 1, limit: pageSize })
+    }
+    const handleReturn = () => {
+        console.log('panigate', panigate)
+        setPanigate({
+            pageCurrent: 0,
+            page: 0,
+            limit: 4,
+            total: panigate?.total
+        })
+    }
+    const handleEndPage = () => {
+        setPanigate({
+            pageCurrent: panigate?.total,
+            page: 0,
+            limit: 4,
+            total: panigate?.total
+        })
     }
     return (
         <div style={{ padding: '0 40px', background: '#efefef' }}>
@@ -50,7 +68,7 @@ export const TypeProductPage = () => {
                 <WrapperProduct span={20}>
                     {stateProductType?.data?.map((product) => {
                         return (
-                            <CardComponent
+                            <CardComponentPageTypeProduct
                                 id={product._id}
                                 key={product._id}
                                 countInStock={product.countInStock}
@@ -69,7 +87,9 @@ export const TypeProductPage = () => {
                 </WrapperProduct>
             </Row>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <Pagination showQuickJumper pageSize={panigate?.limit} current={panigate?.page + 1} total={panigate?.total} onChange={onChange} />
+                {panigate?.pageCurrent !== panigate?.total && <Button onClick={handleEndPage}>Cuối Trang </Button>}
+                <Pagination showQuickJumper={panigate?.pageCurrent === panigate?.total ? false : true} pageSize={panigate?.limit} current={panigate.pageCurrent} total={panigate?.total + 10} onChange={onChange} disabled={panigate?.pageCurrent === panigate?.total} />
+                {panigate?.pageCurrent === panigate?.total && <Button onClick={handleReturn}>Trở về </Button>}
             </div>
         </div>
     )

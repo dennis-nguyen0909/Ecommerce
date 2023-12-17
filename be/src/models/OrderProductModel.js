@@ -7,6 +7,8 @@ const orderSchema = new mongoose.Schema({
             amount: { type: Number, require: true },
             image: { type: String, require: true },
             price: { type: Number, require: true },
+            size: { type: String },
+            discount: { type: Number },
             product: {
                 type: mongoose.Schema.Types.ObjectId, //join bảng product với order (populate)
                 ref: 'Product',
@@ -16,9 +18,9 @@ const orderSchema = new mongoose.Schema({
     ],
     shippingAddress: {
         fullName: { type: String, require: true },
-        address: { type: Number, require: true },
+        address: { type: String, require: true },
         city: { type: String, require: true },
-        country: { type: String, require: true },
+        // country: { type: String, require: true },
         phone: { type: Number, require: true },
     },
     paymentMethod: { type: String, require: true },
@@ -40,6 +42,6 @@ const orderSchema = new mongoose.Schema({
     timestamps: true
 });
 
-const Order = mongoose.model("Order", productSchema);
+const Order = mongoose.model("Order", orderSchema);
 module.exports = Order;
 

@@ -2,7 +2,23 @@ const Product = require('../models/ProductModel')
 const bcrypt = require('bcrypt');
 const createProduct = (data) => {
     return new Promise(async (resolve, reject) => {
-        const { name, image, type, price, countInStock, rating, description } = data
+        const { name, image, type, price, countInStock, rating, description, discount } = data
+        let newSize;
+
+        // Xử lý trường hợp 'type' là 'Giày'
+        if (type === "Giày") {
+            newSize = ['36', '37', '38', '39', '40', '41', '42', '43'];
+        }
+        // Xử lý trường hợp 'type' là 'Áo'
+        else if (type === "Áo" || type === "Quần") {
+            newSize = ['S', 'M', 'L', 'XL'];
+        }
+        // Xử lý trường hợp khác
+        else if (type === "Nón") {
+            newSize = ['Size 1', 'Size 2']; // Hoặc bất kỳ giá trị mặc định nào bạn muốn
+        } else {
+            newSize = ['One Size']
+        }
         try {
             const checkProductExist = await Product.findOne({
                 name: name
@@ -14,7 +30,7 @@ const createProduct = (data) => {
                 })
             }
             const createNewProduct = await Product.create({
-                name, image, type, price, countInStock, rating, description
+                name, image, type, price, countInStock: Number(countInStock), rating, description, discount, size: newSize
             })
             if (createNewProduct) {
                 resolve({
@@ -41,6 +57,26 @@ const updateProduct = (id, data) => {
                     message: "Id không tồn tại!!"
                 })
             }
+            const type = data.type || checkIdProduct.type;
+            let newSize;
+
+            // Xử lý trường hợp 'type' là 'Giày'
+            if (type === "Giày") {
+                newSize = ['36', '37', '38', '39', '40', '41', '42', '43'];
+            }
+            // Xử lý trường hợp 'type' là 'Áo'
+            else if (type === "Áo" || type === "Quần") {
+                newSize = ['S', 'M', 'L', 'XL'];
+            }
+            // Xử lý trường hợp khác
+            else if (type === "Nón") {
+                newSize = ['Size 1', 'Size 2']; // Hoặc bất kỳ giá trị mặc định nào bạn muốn
+            } else {
+                newSize = ['One Size']
+            }
+            // Tạo một bản sao của mảng 'newSize' và gán cho 'data.size'
+            data.size = newSize.slice();
+
             const updateNewProduct = await Product.findByIdAndUpdate(
                 id, data, { new: true });
             if (updateNewProduct) {
@@ -100,21 +136,21 @@ const getDetailProduct = (id) => {
     })
 }
 const getAllProduct = (limit, page, sort, filter) => {
-    console.log('mili', limit)
     return new Promise(async (resolve, reject) => {
         try {
             const totalProduct = await Product.countDocuments()
             let allProduct = []
             if (filter) {
                 const label = filter[0];
+                const totalProductFilter = await Product.countDocuments({ [label]: { '$regex': filter[1] } })
                 const allObjectFilter = await Product.find({ [label]: { '$regex': filter[1] } }).limit(limit).skip(page * limit).sort({ createdAt: -1, updatedAt: -1 })
                 resolve({
-                    status: 'OK',
+                    status: 'Filter Ok',
                     message: 'Success',
                     data: allObjectFilter,
                     total: totalProduct,
                     pageCurrent: Number(page + 1),
-                    totalPage: Math.ceil(totalProduct / limit)
+                    totalPage: Math.ceil(totalProductFilter / limit)
                 })
             }
             if (sort) {
@@ -122,7 +158,7 @@ const getAllProduct = (limit, page, sort, filter) => {
                 objectSort[sort[1]] = sort[0]
                 const allProductSort = await Product.find().limit(limit).skip(page * limit).sort(objectSort).sort({ createdAt: -1, updatedAt: -1 })
                 resolve({
-                    status: 'OK',
+                    status: 'Sort Ok',
                     message: 'Success',
                     data: allProductSort,
                     total: totalProduct,
@@ -131,10 +167,11 @@ const getAllProduct = (limit, page, sort, filter) => {
                 })
             }
             if (!limit) {
-                allProduct = await Product.find().sort({ createdAt: -1, updatedAt: -1 })
+                allProduct = await Product.find()
             } else {
                 allProduct = await Product.find().limit(limit).skip(page * limit).sort({ createdAt: -1, updatedAt: -1 })
             }
+
             resolve({
                 status: 'OK',
                 message: 'Success',

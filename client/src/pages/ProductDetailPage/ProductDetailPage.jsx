@@ -7,7 +7,6 @@ export const ProductDetailPage = () => {
     // use usePrams get IdProduct on URL
     const idProduct = useParams()
     const navigate = useNavigate()
-    console.log('id', idProduct.id)
 
     return (
         <div style={{ padding: '0 120px', background: 'rgb(247,247,247)', height: 'fit-content' }}>

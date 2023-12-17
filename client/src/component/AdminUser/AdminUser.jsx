@@ -706,7 +706,7 @@ export const AdminUser = () => {
                                 },
                             ]}
                         >
-                            <InputComponent value={stateUserDetail.address} onChange={handleOnChangeUserDetail} name="address" />
+                            <InputComponent value={stateUserDetail} onChange={handleOnChangeUserDetail} name="address" />
                         </Form.Item>
                         <Form.Item
                             label="Image"

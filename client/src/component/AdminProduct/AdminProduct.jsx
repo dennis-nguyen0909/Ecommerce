@@ -38,9 +38,8 @@ export const AdminProduct = () => {
         clearFilters();
         setSearchText('');
     };
-    console.log('row', rowSelected)
     const user = useSelector((state) => state.user)
-    const [stateProduct, setStateProduct] = useState({
+    const initial = () => ({
         name: '',
         type: '',
         price: '',
@@ -48,9 +47,9 @@ export const AdminProduct = () => {
         rating: '',
         image: '',
         countInStock: '',
-        newType: ''
-
+        discount: '',
     })
+    const [stateProduct, setStateProduct] = useState(initial())
     const [stateProductDetail, setStateProductDetail] = useState({
         name: '',
         type: '',
@@ -59,6 +58,7 @@ export const AdminProduct = () => {
         rating: '',
         image: '',
         countInStock: '',
+        discount: '',
     })
     const deleteManyProduct = useMutationHook(
         async (data) => {
@@ -87,21 +87,25 @@ export const AdminProduct = () => {
         const response = await ProductService.getAllProduct();
         return response
     }
+
     const mutation = useMutationHook(
         async (data) => {
-            const {
-                name,
-                price,
-                description,
-                rating,
-                image,
-                type,
-                countInStock,
-            } = data
-            const res = await ProductService.createProduct(stateProduct)
+            const res = await ProductService.createProduct({
+                name: stateProduct.name,
+                type: stateProduct.type === 'add_type' ? stateProduct.newType : stateProduct.type,
+                price: stateProduct.price,
+                description: stateProduct.description,
+                rating: stateProduct.rating,
+                image: stateProduct.image,
+                countInStock: stateProduct.countInStock,
+                discount: stateProduct.discount,
+                size: stateProduct.type === 'Giày ' ? ['36', '37', '38', '39', '40', '41', '42', '43'] : ['S', 'M', 'L', 'XL'],
+            })
+
             return res;
         }
     )
+
     const { data, isLoading, isError, isSuccess } = mutation
     const query = useQuery({ queryKey: ['products'], queryFn: fetchGetAllProduct })
     const { isLoading: isLoadingProduct } = query
@@ -213,6 +217,8 @@ export const AdminProduct = () => {
             rating: '',
             image: '',
             countInStock: '',
+            discount: '',
+
         })
         formModal.resetFields()
     };
@@ -226,6 +232,8 @@ export const AdminProduct = () => {
             rating: '',
             image: '',
             countInStock: '',
+            discount: '',
+
         })
         formModal.resetFields()
     };
@@ -253,6 +261,7 @@ export const AdminProduct = () => {
             rating: stateProduct.rating,
             image: stateProduct.image,
             countInStock: stateProduct.countInStock,
+            discount: stateProduct.discount,
         }
         try {
             setLoading(true)
@@ -392,6 +401,8 @@ export const AdminProduct = () => {
                 rating: res.response.data.rating,
                 image: res.response.data.image,
                 countInStock: res.response.data.countInStock,
+                discount: res.response.data.discount,
+                size: res.response.data.size
             })
             // formDrawer.setFieldsValue(res.response.data)
         }
@@ -404,7 +415,11 @@ export const AdminProduct = () => {
     }, [rowSelected])
     useEffect(() => {
         if (rowSelected) {
-            formModal.setFieldsValue(stateProductDetail)
+            if (!isModalOpen) {
+                formModal.setFieldsValue(stateProductDetail)
+            } else {
+                formModal.setFieldsValue(initial())
+            }
         }
     }, [formModal, stateProductDetail])
     const handleOnChangeProductDetail = (e) => {
@@ -416,6 +431,7 @@ export const AdminProduct = () => {
     }
     const onUpdateProduct = async () => {
         setIsLoadingUpdate(true)
+
         const res = await ProductService.updateProduct(rowSelected, stateProductDetail, user?.access_token);
         formModal.setFieldsValue(res.updateNewProduct)
         if (res?.status === "Ok") {
@@ -462,11 +478,11 @@ export const AdminProduct = () => {
         // Giữ nguyên state product và cập nhật type =value chọn
         setStateProduct({
             ...stateProduct,
-            type: value
+            type: value,
         })
         setStateProductDetail({
             ...stateProductDetail,
-            type: value
+            type: value,
         })
 
     }
@@ -552,7 +568,33 @@ export const AdminProduct = () => {
                                     width: 200,
                                 }}
                                 onChange={handleChangeSelectType}
-                                options={renderOptions(typeProduct)}
+                                options={[
+                                    {
+                                        label: 'Loại Sản Phẩm',
+                                        options: [
+                                            {
+                                                label: 'Áo',
+                                                value: 'Áo',
+                                            },
+                                            {
+                                                label: 'Quần',
+                                                value: 'Quần',
+                                            },
+                                            {
+                                                label: 'Giày',
+                                                value: 'Giày',
+                                            },
+                                            {
+                                                label: 'Nón',
+                                                value: 'Nón',
+                                            },
+                                            {
+                                                label: 'Balo',
+                                                value: 'Balo',
+                                            },
+                                        ],
+                                    },
+                                ]}
 
                             />
                         </Form.Item>
@@ -582,6 +624,8 @@ export const AdminProduct = () => {
                         >
                             <InputComponent value={stateProduct.rating} onChange={handleOnChangeProduct} name="rating" />
                         </Form.Item>
+
+
                         <Form.Item
                             label="Description"
                             name="description"
@@ -605,6 +649,18 @@ export const AdminProduct = () => {
                             ]}
                         >
                             <InputComponent value={stateProduct.countInStock} onChange={handleOnChangeProduct} name="countInStock" />
+                        </Form.Item>
+                        <Form.Item
+                            label="Discount"
+                            name="discount"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input your countInStock!',
+                                },
+                            ]}
+                        >
+                            <InputComponent value={stateProduct.discount} onChange={handleOnChangeProduct} name="discount" />
                         </Form.Item>
                         <Form.Item
                             label="Image"
@@ -699,16 +755,43 @@ export const AdminProduct = () => {
 
                         >
                             < Select
+                                value={stateProductDetail.type}
                                 name="type"
                                 // defaultValue="lucy"
                                 style={{
                                     width: 200,
                                 }}
                                 onChange={handleChangeSelectType}
-                                options={renderOptions(typeProduct)}
+                                options={[
+                                    {
+                                        label: 'Loại Sản Phẩm',
+                                        options: [
+                                            {
+                                                label: 'Áo',
+                                                value: 'Áo',
+                                            },
+                                            {
+                                                label: 'Quần',
+                                                value: 'Quần',
+                                            },
+                                            {
+                                                label: 'Giày',
+                                                value: 'Giày',
+                                            },
+                                            {
+                                                label: 'Nón',
+                                                value: 'Nón',
+                                            },
+                                            {
+                                                label: 'Balo',
+                                                value: 'Balo',
+                                            },
+                                        ],
+                                    },
+                                ]}
 
                             />
-                            <InputComponent value={stateProductDetail.type} onChange={handleOnChangeProductDetail} name="type" />
+                            {/* <InputComponent value={stateProductDetail.type} onChange={handleOnChangeProductDetail} name="type" /> */}
                         </Form.Item>
                         <Form.Item
                             label="Rating"
@@ -745,6 +828,18 @@ export const AdminProduct = () => {
                             ]}
                         >
                             <InputComponent value={stateProductDetail.countInStock} onChange={handleOnChangeProductDetail} name="countInStock" />
+                        </Form.Item>
+                        <Form.Item
+                            label="Discount"
+                            name="discount"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input your Discount!',
+                                },
+                            ]}
+                        >
+                            <InputComponent value={stateProductDetail.discount} onChange={handleOnChangeProduct} name="discount" />
                         </Form.Item>
                         <Form.Item
                             label="Image"

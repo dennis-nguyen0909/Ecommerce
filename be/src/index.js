@@ -10,7 +10,8 @@ const port = process.env.PORT_LOCAL || 8888
 const UserRouter = require('./routes/UserRouter');
 const ProductRouter = require('./routes/ProductRouter');
 const Cloudinary = require('./routes/Cloudinary')
-const cloudinary = require('cloudinary')
+const cloudinary = require('cloudinary');
+const OrderRouter = require('./routes/OrderRouter');
 
 cloudinary.config({
     cloud_name: 'dxtz2g7ga',
@@ -29,8 +30,8 @@ app.use(cookieParser())
 
 UserRouter(app);
 ProductRouter(app);
-Cloudinary(app)
-
+Cloudinary(app);
+OrderRouter(app);
 mongoose.connect(process.env.MONGODB, {
     useNewUrlParser: true,
     useUnifiedTopology: true

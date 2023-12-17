@@ -10,7 +10,10 @@ const userSchema = new mongoose.Schema(
         access_token: { type: String, require: true },
         refresh_token: { type: String, require: true },
         avatar: { type: String },
-        address: { type: String }
+        address: { type: String },
+        city: { type: String },
+        districts: { type: String },
+        ward: { type: String }
     }, {
     timestamps: true
 });

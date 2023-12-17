@@ -49,16 +49,17 @@ const loginUser = (userLogin) => {
             if (checkUserExist === null) {
                 resolve({
                     status: 'Error',
-                    message: "User is not undefined !!",
+                    message: "Tài khoản của bạn không tồn tại !!",
                     EC: 0
                 })
             }
             const comparePassword = bcrypt.compareSync(password, checkUserExist.password);
+            console.log(comparePassword)
             //#3 giải pass đã bcrypt
-            if (!comparePassword) {
-                return res.status(200).json({
+            if (comparePassword === false) {
+                resolve({
                     status: 'Error',
-                    message: "user or password incorrect",
+                    message: "Tài khoản hoặc password không đúng!",
                     EC: 0
                 })
             }

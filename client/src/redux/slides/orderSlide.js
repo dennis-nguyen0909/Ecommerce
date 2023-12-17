@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     orderItems: [
     ],
+    orderItemsSelected: [],
     shippingAddress: {
 
     },
@@ -22,42 +23,94 @@ export const orderSlide = createSlice({
     initialState,
     reducers: {
         addOrderProduct: (state, action) => {
-            const { orderItem } = action.payload
-            const itemOrder = state?.orderItems?.find((item) => item?.product === orderItem?.product)
-            if (itemOrder) {
-                //nếu sp đã có trong giỏ
-                // cộng sl item hiện tại trong giỏ với sl mới
-                itemOrder.amount += orderItem?.amount
+            const { orderItem } = action.payload;
+            const existingOrderItemIndex = state.orderItems.findIndex(
+                (item) => item.product === orderItem.product && item.size === orderItem.size
+            );
+
+            if (existingOrderItemIndex !== -1) {
+                // Nếu sản phẩm với kích thước đã có trong đơn đặt hàng
+                state.orderItems[existingOrderItemIndex].amount += orderItem.amount;
             } else {
-                // nếu chưa có thì thêm vào state initialState
-                state.orderItems.push(orderItem)
+                // Nếu sản phẩm với kích thước chưa có trong đơn đặt hàng, thêm mới
+                state.orderItems.push(orderItem);
             }
         },
         removeOrderProduct: (state, action) => {
             const idProduct = action.payload
             const itemOrder = state?.orderItems?.filter((item) => item?.product !== idProduct) // tìm những thằng kh có trong idProduct
+            const selectedItemsOrder = state?.orderItemsSelected?.filter((item) => item?.product !== idProduct) // tìm những thằng kh có trong idProduct
             state.orderItems = itemOrder
-            console.log('remove', { idProduct }, itemOrder)
+            state.orderItems = selectedItemsOrder
+
         },
         removeAllOrderProduct: (state, action) => {
             const { selectedCheck } = action.payload
             const itemOrders = state?.orderItems?.filter((item) => !selectedCheck.includes(item?.product)) // tìm những thằng kh có trong idProduct
+            const selectedItemsOrder = state?.orderItemsSelected?.filter((item) => !selectedCheck.includes(item?.product)) // tìm những thằng kh có trong idProduct
             state.orderItems = itemOrders
+            state.orderItems = selectedItemsOrder
+
 
         },
         increaseAmount: (state, action) => {
             const idProduct = action.payload
             const itemOrder = state?.orderItems?.find((item) => item?.product === idProduct) // tìm những thằng kh có trong idProduct
+            const selectedItemsOrder = state?.orderItemsSelected?.find((item) => item?.product === idProduct) // tìm những thằng kh có trong idProduct
             itemOrder.amount++
+            if (selectedItemsOrder) {
+
+                selectedItemsOrder.amount++
+            }
 
         }
         , decreaseAmount: (state, action) => {
             const idProduct = action.payload
             const itemOrder = state?.orderItems?.find((item) => item?.product === idProduct) // tìm những thằng kh có trong idProduct
-            itemOrder.amount--
+            const selectedItemsOrder = state?.orderItemsSelected?.find((item) => item?.product === idProduct) // tìm những thằng kh có trong idProduct
+            if (itemOrder.amount > 0) {
+                itemOrder.amount--
+            }
+            if (selectedItemsOrder) {
+                if (selectedItemsOrder.amount > 0) {
+                    selectedItemsOrder.amount--
+                }
+            }
 
+        },
+        totalAllProduct: (state, action) => {
+            const { selectedCheck } = action.payload
+            console.log('selected', selectedCheck)
+            const itemOrders = state?.orderItems?.filter((item) => !selectedCheck.includes(item?.product)) // tìm những thằng kh có trong idProduct
+            const selectedItemsOrder = state?.orderItemsSelected?.filter((item) => !selectedCheck.includes(item?.product)) // tìm những thằng kh có trong idProduct
+            state.orderItems = itemOrders
+            state.orderItems = selectedItemsOrder
+        },
+        selectedOrder: (state, action) => {
+            const { selectedCheck } = action.payload
+            console.log('list', selectedCheck)
+            const orderSelected = []
+            state.orderItems.forEach((order) => {
+                if (selectedCheck.includes(order.product)) {
+                    orderSelected.push(order)
+                };
+            });
+            state.orderItemsSelected = orderSelected
+            // const selectedCheck = action.payload;
+            // const orderSelected = state?.orderItems?.filter((item) =>
+            //     selectedCheck?.includes(item.product)
+            // );
+            // return {
+            //     ...state,
+            //     orderItemsSelected: orderSelected,
+            // };
+        },
+        resetOrder: (state, action) => {
+            initialState()
         }
     }
 })
-export const { addOrderProduct, removeOrderProduct, decreaseAmount, increaseAmount, removeAllOrderProduct } = orderSlide.actions
+export const { addOrderProduct, removeOrderProduct,
+    decreaseAmount, increaseAmount, resetOrder
+    , removeAllOrderProduct, totalAllProduct, selectedOrder } = orderSlide.actions
 export default orderSlide.reducer
