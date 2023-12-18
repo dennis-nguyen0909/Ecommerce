@@ -1,20 +1,17 @@
 import React, { useState } from 'react'
-import { WrapperContainerProfile, WrapperDivContainer, WrapperLabelForm, WrapperLabelText, WrapperUploadFile } from './style'
+import { WrapperContainerProfile, WrapperDivContainer, WrapperLabelText } from './style'
 import { InputForm } from '../../component/InputForm/InputForm'
 import { ButtonComponent } from '../../component/ButtonComponent/ButtonComponent'
-import { Button, Col, Form, Image, Input, Row, message } from 'antd'
+import { Col, Form, Image, Input, Row, message } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutationHook } from '../../hooks/userMutationHook'
 import * as UserService from '../../services/UserService'
-import { jwtDecode } from 'jwt-decode'
+
 import LoadingComponent from '../../component/LoadingComponent/LoadingComponent'
 import { useEffect } from 'react'
 import { updateUser } from '../../redux/slides/userSlide'
-import { isPending } from '@reduxjs/toolkit'
-import { Upload, Avatar } from 'antd'
-import { UploadOutlined } from '@ant-design/icons';
 import { getBase64 } from '../../untils'
-import { UserOutlined } from '@ant-design/icons';
+
 import avatarDefault from '../../assets/images/avatar.jpeg'
 import axios from 'axios'
 
@@ -42,7 +39,7 @@ export const ProfileUserPage = () => {
 
                 })
                 .catch(err => {
-                    console.log(err);
+                    // console.log(err);
                 })
         }
     }
@@ -126,8 +123,8 @@ export const ProfileUserPage = () => {
                         {/* <WrapperUploadFile onChange={handleOnChangeAvatar} maxCount={1}>
                             <Button icon={<UploadOutlined />}>Click to Upload</Button>
                         </WrapperUploadFile> */}
-                        <Form id='pic' >
-                            <label>Upload Picture</label>
+                        <Form id='pic' style={{ marginTop: '20px' }} >
+                            <label>Update Avatar</label>
                             <Input type='file'
                                 p={1.5}
                                 accept='image/*'
@@ -138,7 +135,7 @@ export const ProfileUserPage = () => {
                             size={'40'}
                             onClick={handleUpdate}
                             styleButton={{
-                                backgroundColor: "rgb(240,213,219)",
+                                backgroundColor: "rgb(71,71,71)",
                                 height: '48px',
                                 width: '100%',
                                 border: 'none',
@@ -174,14 +171,6 @@ export const ProfileUserPage = () => {
                             placeholder={user.isAdmin === false ? "User" : "Admin"}
                             value={isAdmin} onChange={handleOnChangeAdmin}
                         />
-                        {/* <WrapperLabelForm>
-                            <label style={{ paddingRight: '10px' }}>Email :</label>
-                            <label >{user.email}</label>
-                        </WrapperLabelForm>
-                        <WrapperLabelForm>
-                            <label style={{ paddingRight: '10px' }}>Role :</label>
-                            <label style={{ color: 'red' }}>{user.isAdmin ? " Admin" : "User"}</label>
-                        </WrapperLabelForm> */}
                         <InputForm
                             label={'Số điện thoại :'}
                             placeholder={user.phone}
@@ -198,7 +187,7 @@ export const ProfileUserPage = () => {
                                 size={'40'}
                                 onClick={handleUpdate}
                                 styleButton={{
-                                    backgroundColor: "rgb(240,213,219)",
+                                    backgroundColor: "rgb(71,71,71)",
                                     height: '48px',
                                     width: '100%',
                                     border: 'none',

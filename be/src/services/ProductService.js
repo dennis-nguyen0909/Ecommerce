@@ -247,7 +247,6 @@ const getAllProduct2 = () => {
 //     })
 // }
 const deleteManyProduct = (ids) => {
-    console.log('danhsach', ids)
     return new Promise(async (resolve, reject) => {
         try {
             await Product.deleteMany({

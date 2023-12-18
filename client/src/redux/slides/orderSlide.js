@@ -92,7 +92,7 @@ export const orderSlide = createSlice({
         },
         totalAllProduct: (state, action) => {
             const { selectedCheck } = action.payload
-            console.log('selected', selectedCheck)
+
             const itemOrders = state?.orderItems?.filter((item) => !selectedCheck.includes(item?.product)) // tìm những thằng kh có trong idProduct
             const selectedItemsOrder = state?.orderItemsSelected?.filter((item) => !selectedCheck.includes(item?.product)) // tìm những thằng kh có trong idProduct
             state.orderItems = itemOrders
@@ -100,7 +100,7 @@ export const orderSlide = createSlice({
         },
         selectedOrder: (state, action) => {
             const { selectedCheck } = action.payload
-            console.log('list', selectedCheck)
+
             const orderSelected = []
             state.orderItems.forEach((order) => {
                 if (selectedCheck.includes(order.product)) {

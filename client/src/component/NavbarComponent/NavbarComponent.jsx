@@ -32,7 +32,6 @@ export const NavbarComponent = ({ types }) => {
                 )
             case 'star':
                 return options.map((option) => {
-                    console.log(option)
                     return (
                         <div style={{ display: 'flex' }}>
                             <Rate style={{ fontSize: '12px' }} disabled defaultValue={option} />

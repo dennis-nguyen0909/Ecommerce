@@ -18,7 +18,6 @@ export const MyOrderDetailsPage = () => {
     }
     const queryOrder = useQuery({ queryKey: ['orders'], queryFn: fetchDetailOrder, enabled: user?.id && user?.access_token ? true : false },)
     const { isLoading, data } = queryOrder
-    console.log('orders', data)
     const priceMemo = useMemo(() => {
         const result = data?.orderItems?.reduce((total, cur) => {
             return total + ((cur.price * cur.amount))
@@ -63,7 +62,7 @@ export const MyOrderDetailsPage = () => {
                             <WrapperItemLabel>Giảm giá</WrapperItemLabel>
                         </div>
                         {data?.orderItems?.map((order) => {
-                            console.log('order', order)
+
                             return (
                                 <>
                                     <WrapperProduct key={order?._id}>

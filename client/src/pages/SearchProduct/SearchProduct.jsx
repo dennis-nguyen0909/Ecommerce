@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useDebounce } from '../../hooks/useDebounce'
 import * as ProductService from '../../services/ProductService'
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { SliderComponent } from '../../component/SliderComponent/SliderComponent'
+import { useQuery } from '@tanstack/react-query'
+
 import { WrapperButtonMore, WrapperProduct } from '../HomePage/style'
 import { CardComponent } from '../../component/CardComponent/CardComponent'
 import LoadingComponent from '../../component/LoadingComponent/LoadingComponent'

@@ -54,7 +54,7 @@ const loginUser = (userLogin) => {
                 })
             }
             const comparePassword = bcrypt.compareSync(password, checkUserExist.password);
-            console.log(comparePassword)
+
             //#3 giải pass đã bcrypt
             if (comparePassword === false) {
                 resolve({

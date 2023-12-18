@@ -1,8 +1,8 @@
-import { Button, Form, Input, Modal, Select, Space, message } from 'antd'
+import { Button, Form, Input, Select, Space, message } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import { TableComponent } from '../TableComponent/TableComponent'
 import { InputComponent } from '../InputComponent/InputComponent';
-import { getBase64, renderOptions } from '../../untils';
+import { getBase64 } from '../../untils';
 import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
 import { useMutationHook } from '../../hooks/userMutationHook';
 import * as ProductService from '../../services/ProductService'
@@ -19,7 +19,6 @@ export const AdminProduct = () => {
     const queryClient = useQueryClient()
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [formModal] = Form.useForm();
-    const [formDrawer] = Form.useForm();
     const [rowSelected, setRowSelected] = useState('')
     const [isOpenDrawer, setIsOpenDrawer] = useState(false)
     const [isLoadingUpdate, setIsLoadingUpdate] = useState(false)
@@ -138,7 +137,7 @@ export const AdminProduct = () => {
                 }
                 )
                 .catch(err => {
-                    console.log(err);
+
                 })
         }
     }
@@ -161,7 +160,7 @@ export const AdminProduct = () => {
                 }
                 )
                 .catch(err => {
-                    console.log(err);
+
                 })
         }
     }
@@ -173,7 +172,7 @@ export const AdminProduct = () => {
         };
         // Sử dụng hàm extractPublicIdFromUrl để lấy publicId từ URL của ảnh
         const publicId = extractPublicIdFromUrl(url);
-        console.log('publicid', publicId)
+
         try {
             const api_key = "953156321132996"
             const api_secret = "As23z_TAML8DqymuQA5Mw - KIk14"
@@ -186,7 +185,7 @@ export const AdminProduct = () => {
                     }
                 }
             );
-            console.log('Image deleted:', response.data);
+
         } catch (error) {
             console.error('Error deleting image:', error);
         }
@@ -274,7 +273,7 @@ export const AdminProduct = () => {
 
     };
     const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+
     };
     const handleOnChangeProduct = (e) => {
         setStateProduct({
@@ -461,7 +460,7 @@ export const AdminProduct = () => {
             message.error("Xóa thất bại ")
 
         }
-        console.log('resdelete', res)
+
         return res;
     }
     const handleDeleteProduct = async () => {

@@ -22,7 +22,6 @@ export const OrderSuccessPage = () => {
     const navigate = useNavigate()
     const location = useLocation();
     const { state } = location
-    console.log(state)
     const handleNavigateHome = () => {
         navigate('/')
     }

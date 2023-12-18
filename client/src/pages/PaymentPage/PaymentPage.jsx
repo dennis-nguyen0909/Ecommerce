@@ -209,7 +209,8 @@ export const PaymentPage = () => {
             totalPrice: totalPriceAll,
             user: user?.id,
             isPaid: true,
-            PaidAt: details?.update_time
+            PaidAt: details?.update_time,
+            email: user?.email
         })
         if (+result?.EC === 1) {
             const arrOrder = []
@@ -227,11 +228,6 @@ export const PaymentPage = () => {
                 }
             })
         }
-        console.log('result', result)
-
-        console.log('details', details)
-        console.log('data', totalPriceAll)
-
     }
 
 

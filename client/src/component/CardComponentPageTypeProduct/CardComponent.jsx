@@ -1,8 +1,6 @@
-import { Card } from 'antd'
-import Meta from 'antd/es/card/Meta'
+
 import React from 'react'
-import { StyleNameProduct, WrapperCardStyle, WrapperDiscountText, WrapperPriceText, WrapperReportText } from './style'
-import { StarFilled } from '@ant-design/icons'
+import { StyleNameProduct, WrapperCardStyle, WrapperPriceText } from './style'
 import { useNavigate } from 'react-router-dom'
 import { covertPrice } from '../../untils'
 export const CardComponentPageTypeProduct = (props) => {

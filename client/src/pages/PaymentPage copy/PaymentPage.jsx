@@ -169,9 +169,6 @@ export const PaymentPage = () => {
         }
 
     }
-
-
-    console.log('loading', isLoadingAdd)
     return (
         <Row style={{ marginTop: '80px' }} >
 

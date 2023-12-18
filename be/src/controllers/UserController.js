@@ -74,7 +74,6 @@ const loginUser = async (req, res) => {
 }
 const updateUser = async (req, res) => {
     try {
-        console.log('req', req.body)
         const userId = req.params.id;
         const data = req.body;
         if (!userId) {

@@ -24,7 +24,6 @@ export const ProductDetailsComponent = ({ idProduct }) => {
         return res.response;
 
     }
-    console.log(location)
     const { data } = useQuery({ queryKey: ['product-detail'], queryFn: fetchGetDetailProduct })
     const productDetail = data?.data
 
@@ -82,7 +81,6 @@ export const ProductDetailsComponent = ({ idProduct }) => {
     useEffect(() => {
         initFacebookSDK();
     }, [])
-    console.log('pro', productDetail)
     return (
         <>
             <Row style={{ padding: '16px', backgroundColor: "#fff", boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', width: '100%', borderRadius: '4px' }}>
@@ -128,7 +126,7 @@ export const ProductDetailsComponent = ({ idProduct }) => {
                         <span className='change-address'> Đổi địa chỉ</span>
 
                     </WrapperAddressProduct> */}
-                    <LikeButtonComentFB dataHref={"https://developers.facebook.com/docs/plugins/"} />
+                    <LikeButtonComentFB dataHref={process.env.REACT_APP_IS_LOCAL ? "https://developers.facebook.com/docs/plugins/" : window.location.href} />
                     <div>
                         <span>HÀNG CÒN SẴN: {productDetail?.countInStock}</span>
                     </div>
@@ -205,7 +203,9 @@ export const ProductDetailsComponent = ({ idProduct }) => {
 
             </Row >
             <div>
-                <CommentFB dataHref={"https://developers.facebook.com/docs/plugins/comments#configurator"} width={1200} />
+                <CommentFB
+                    dataHref={process.env.REACT_APP_IS_LOCAL ? "https://developers.facebook.com/docs/plugins/comments#configurator" : window.location.href}
+                    width={1200} />
             </div>
         </>
     )

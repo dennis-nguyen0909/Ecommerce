@@ -233,7 +233,7 @@ export const AdminUser = () => {
                 }
                 )
                 .catch(err => {
-                    console.log(err);
+                    // console.log(err);
                 })
         }
     }
@@ -256,7 +256,7 @@ export const AdminUser = () => {
                 }
                 )
                 .catch(err => {
-                    console.log(err);
+                    // console.log(err);
                 })
         }
     }
@@ -280,7 +280,7 @@ export const AdminUser = () => {
                     }
                 }
             );
-            console.log('Image deleted:', response.data);
+
         } catch (error) {
             console.error('Error deleting image:', error);
         }
@@ -353,7 +353,7 @@ export const AdminUser = () => {
 
     };
     const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+        // console.log('Failed:', errorInfo);
     };
     const handleOnChangeUser = (e) => {
         setStateUser({

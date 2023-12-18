@@ -16,7 +16,7 @@ const createOrder = async (req, res) => {
             data: response
         })
     } catch (error) {
-        console.log(error)
+
         return res.status(404).json({
             status: 'error',
             message: error
@@ -72,7 +72,7 @@ const cancelOrderProduct = async (req, res) => {
         const response = await OrderService.cancelOrderProduct(id, data);
         return res.status(200).json(response)
     } catch (error) {
-        console.log(error)
+
         return res.status(404).json({
             message: error
         })

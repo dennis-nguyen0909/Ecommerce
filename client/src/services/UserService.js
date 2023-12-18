@@ -1,16 +1,16 @@
 import axios from "axios";
 export const axiosJWT = axios.create()
 export const signUp = async (data) => {
-    const res = await axios.post('http://localhost:3000/api/user/sign-up', data);
+    const res = await axios.post(`${process.env.REACT_APP_API}user/sign-up`, data);
     return res.data;
 }
 export const loginUser = async (data) => {
-    const res = await axios.post('http://localhost:3000/api/user/login', data);
+    const res = await axios.post(`${process.env.REACT_APP_API}user/login`, data);
     return res.data;
 }
 
 export const getDetailUser = async (id, access_token) => {
-    const res = await axiosJWT.get(`http://localhost:3000/api/user/get-details/${id}`, {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API}user/get-details/${id}`, {
         headers: {
             token: `Bearer ${access_token}`,
         }
@@ -18,7 +18,7 @@ export const getDetailUser = async (id, access_token) => {
     return res.data;
 }
 export const refreshToken = async (id, access_token) => {
-    const res = await axios.post(`http://localhost:3000/api/user/refresh-token`, {
+    const res = await axios.post(`${process.env.REACT_APP_API}user/refresh-token`, {
         withCredentials: true// tự động lấy cookie
     });
     return res.data;
@@ -29,12 +29,12 @@ export const refreshToken = async (id, access_token) => {
 
 
 export const logoutUser = async () => {
-    const res = await axios.post(`http://localhost:3000/api/user/logout-user`)
+    const res = await axios.post(`${process.env.REACT_APP_API}user/logout-user`)
     return res.data;
 }
 
 export const updateUser = async (id, data, access_token) => {
-    const res = await axiosJWT.put(`http://localhost:3000/api/user/update-user/${id}`, data, {
+    const res = await axiosJWT.put(`${process.env.REACT_APP_API}user/update-user/${id}`, data, {
         headers: {
             token: `Bearer ${access_token}`,
         }
@@ -43,11 +43,11 @@ export const updateUser = async (id, data, access_token) => {
 }
 
 export const createUser = async (data) => {
-    const res = await axios.post('http://localhost:3000/api/user/sign-up', data);
+    const res = await axios.post(`${process.env.REACT_APP_API}user/sign-up`, data);
     return res.data;
 }
 export const getAllUser = async (access_token) => {
-    const res = await axiosJWT.get(`http://localhost:3000/api/user/getAllUser`, {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API}user/getAllUser`, {
         headers: {
             token: `Bearer ${access_token}`
         }
@@ -55,7 +55,7 @@ export const getAllUser = async (access_token) => {
     return res;
 }
 export const deleteUser = async (id, access_token) => {
-    const res = await axiosJWT.delete(`http://localhost:3000/api/user/delete-user/${id}`, {
+    const res = await axiosJWT.delete(`${process.env.REACT_APP_API}user/delete-user/${id}`, {
         headers: {
             token: `Bearer ${access_token}`,
         }
@@ -65,12 +65,19 @@ export const deleteUser = async (id, access_token) => {
 
 
 export const deleteManyUser = async (ids, access_token) => {
-    const res = await axiosJWT.post(`http://localhost:3000/api/user/delete-many`, ids, {
+    const res = await axiosJWT.post(`${process.env.REACT_APP_API}user/delete-many`, ids, {
         headers: {
             token: `Bearer ${access_token}`,
         }
     });
     return res.data;
 }
-
+export const deleteManyProduct = async (ids, access_token) => {
+    const res = await axiosJWT.post(`${process.env.REACT_APP_API}product/delete-many`, ids, {
+        headers: {
+            token: `Bearer ${access_token}`,
+        }
+    });
+    return res.data;
+}
 

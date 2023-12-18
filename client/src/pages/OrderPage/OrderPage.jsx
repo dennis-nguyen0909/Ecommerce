@@ -101,7 +101,6 @@ export const OrderPage = () => {
             setSelectedCheck([])
         }
     }
-    console.log('se', selectedCheck)
     const onChangeCheckbox = (e) => {
         if (selectedCheck.includes(e.target.value)) {
             const newListCheck = selectedCheck.filter((item) => item !== e.target.value)

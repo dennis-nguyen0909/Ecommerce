@@ -24,14 +24,14 @@ export const SignUpPage = () => {
     )
 
 
-    const { data, isPending, isSuccess, isError } = mutation
+    const { data, isPending, isSuccess } = mutation
     useEffect(() => {
         if (data?.message?.status === 'Ok') {
             message.success("Đăng ký thành công !")
             handleNavigateLogin()
         }
         if (data?.message?.status === "Error") {
-            message.error(data?.message)
+            message.error("Đăng ký thất bại")
         }
     }, [isSuccess])
 

@@ -1,10 +1,10 @@
 import axios from "axios";
 import { axiosJWT } from "./UserService";
 
-
+console.log('pro', process.env.API_BACKEND)
+console.log('pro', process.env.REACT_APP_FB_ID)
 export const createOrder = async (data, access_token) => {
-    console.log(data)
-    const res = await axios.post('http://localhost:3000/api/order/create', data, {
+    const res = await axios.post(`${process.env.REACT_APP_API}order/create`, data, {
         headers: {
             token: `Bearer ${access_token}`
         }
@@ -14,7 +14,7 @@ export const createOrder = async (data, access_token) => {
 
 export const getAllOrderbyIdUser = async (id, access_token) => {
 
-    const res = await axiosJWT.get(`http://localhost:3000/api/order/get-all-order/${id}`, {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API}order/get-all-order/${id}`, {
         headers: {
             token: `Bearer ${access_token}`
         }
@@ -22,8 +22,7 @@ export const getAllOrderbyIdUser = async (id, access_token) => {
     return res.data;
 }
 export const getDetailOrder = async (id, access_token) => {
-    console.log('id', id)
-    const res = await axiosJWT.get(`http://localhost:3000/api/order/get-details-order/${id}`, {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API}order/get-details-order/${id}`, {
         headers: {
             token: `Bearer ${access_token}`
         }
@@ -31,7 +30,7 @@ export const getDetailOrder = async (id, access_token) => {
     return res.data;
 }
 export const cancelOrderProduct = async (id, access_token, orderItems) => {
-    const res = await axiosJWT.delete(`http://localhost:3000/api/order/cancel-order/${id}`, { data: orderItems }, {
+    const res = await axiosJWT.delete(`${process.env.REACT_APP_API}order/cancel-order/${id}`, { data: orderItems }, {
         headers: {
             token: `Bearer ${access_token}`
         }

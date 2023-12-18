@@ -58,7 +58,6 @@ export const MyOrderPage = () => {
     }
     const fetchCancelProduct = async (order) => {
         const res = await OrderService.cancelOrderProduct(order?._id, user?.access_token, order?.orderItems)
-        console.log(res);
     }
     const handleCancelProduct = (order) => {
         fetchCancelProduct(order);

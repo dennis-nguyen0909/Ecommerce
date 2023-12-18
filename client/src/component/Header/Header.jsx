@@ -17,7 +17,6 @@ import { Drawer } from 'antd';
 import { DrawerComponent } from '../DrawerComponent/DrawerComponent'
 import { InputComponent } from '../InputComponent/InputComponent'
 import { ButtonComponent } from '../ButtonComponent/ButtonComponent'
-import { CardComponent } from '../CardComponent/CardComponent'
 import { WrapperButtonQuality, WrapperQualityProduct } from '../ProductDetailsComponent/style'
 import { decreaseAmount, increaseAmount, removeOrderProduct } from '../../redux/slides/orderSlide'
 import { covertPrice } from '../../untils'
@@ -263,7 +262,7 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                                     </WrapperButtonQuality>
                                 </WrapperQualityProduct>
                             </div>
-                            <div onClick={() => handleDeleteOrder(item?.product)}>Xóa</div>
+                            <div style={{ cursor: 'pointer' }} onClick={() => handleDeleteOrder(item?.product)}>X</div>
                         </div>
 
                     )

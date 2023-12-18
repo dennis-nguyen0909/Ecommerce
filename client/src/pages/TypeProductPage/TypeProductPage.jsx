@@ -1,10 +1,9 @@
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import { NavbarComponent } from '../../component/NavbarComponent/NavbarComponent'
-import { Button, Col, Pagination, Row } from 'antd'
+import { Button, Pagination, Row } from 'antd'
 import { WrapperNavbar, WrapperProduct } from './style'
 import { useLocation } from 'react-router-dom'
 import * as ProductService from '../../services/ProductService'
-import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { CardComponentPageTypeProduct } from '../../component/CardComponentPageTypeProduct/CardComponent'
 export const TypeProductPage = () => {
@@ -43,7 +42,6 @@ export const TypeProductPage = () => {
         setPanigate({ ...panigate, page: current - 1, limit: pageSize })
     }
     const handleReturn = () => {
-        console.log('panigate', panigate)
         setPanigate({
             pageCurrent: 0,
             page: 0,

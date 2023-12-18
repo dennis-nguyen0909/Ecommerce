@@ -4,8 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const sendEmailCreateOrder = async (email, orderItems, totalPrice, paymentMethod, isPaid, PaidAt) => {
     const covertPrice = totalPrice.toLocaleString().replaceAll('.', '.')
-    console.log(process.env.MAIL_ACCOUNT)
-    console.log(process.env.MAIL_PASSWORD)
+
     let transporter = nodemailer.createTransport({
         service: 'Gmail',//chọn service là Gmail nếu ko sẽ sai
         host: "smtp.gmail.com",
@@ -32,7 +31,7 @@ const sendEmailCreateOrder = async (email, orderItems, totalPrice, paymentMethod
     });
     let info = await transporter.sendMail({
         from: process.env.MAIL_ACCOUNT, // sender address
-        to: "duyxitrum000@gmail.com", // list of receivers
+        to: email, // list of receivers
         subject: "Cám ơn , quý khách đã mua hàng tại Sneaker Asia.", // Subject line
         text: "Hello world?", // plain text body
         html: `<div>
