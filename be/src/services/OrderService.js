@@ -1,10 +1,10 @@
 const Order = require('../models/OrderProductModel')
 const Product = require('../models/ProductModel')
 const bcrypt = require('bcrypt');
+const EmailService = require('../services/EmailService')
 const createOrder = (data) => {
     return new Promise(async (resolve, reject) => {
-
-        const { paymentMethod, itemsPrice, totalPrice, shippingPrice, fullName, address, city, phone, user, orderItems, isPaid, PaidAt } = data
+        const { paymentMethod, itemsPrice, totalPrice, shippingPrice, fullName, address, city, phone, user, orderItems, isPaid, PaidAt, email } = data
         try {
             const promise = orderItems?.map(async (order) => {
                 const productData = await Product.findOneAndUpdate(
@@ -65,12 +65,15 @@ const createOrder = (data) => {
                     isPaid,
                     PaidAt
                 })
-                resolve({
-                    EC: 1,
-                    ES: 'SUCCESS',
-                    EM: 'Mua thành công',
-                    addOrder
-                })
+                if (addOrder) {
+                    await EmailService.sendEmailCreateOrder(email, orderItems, totalPrice);
+                    resolve({
+                        EC: 1,
+                        ES: 'SUCCESS',
+                        EM: 'Mua thành công',
+                        addOrder
+                    })
+                }
             }
         } catch (error) {
             reject(error)

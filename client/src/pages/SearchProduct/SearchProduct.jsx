@@ -22,6 +22,7 @@ export const SearchProduct = () => {
     const handleLoadMore = () => {
         setLimit((prev) => prev + 3)
     }
+    console.log(products?.data.map((product) => product._id))
     return (
         <>
             <h3 style={{ padding: '0 30px', fontSize: '14px', gap: '10px', color: 'rgb(137,137,137)' }}>Tìm Kiếm  /
@@ -34,7 +35,8 @@ export const SearchProduct = () => {
                         <WrapperProduct>
                             {products?.data && products?.data?.length > 0 ? (
                                 products?.data.map((product) => (
-                                    <CardComponent
+                                    < CardComponent
+                                        id={product._id}
                                         key={product._id}
                                         countInStock={product.countInStock}
                                         description={product.description}

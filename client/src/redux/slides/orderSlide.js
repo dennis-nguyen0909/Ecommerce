@@ -16,23 +16,36 @@ const initialState = {
     isPaid: false,
     paidAt: '',
     isDelivered: false,
-    deliveredAt: ''
+    deliveredAt: '',
+    isErrorOrder: false,
+    isSuccessOrder: false,
 }
 export const orderSlide = createSlice({
     name: "order",
     initialState,
     reducers: {
         addOrderProduct: (state, action) => {
-            const { orderItem } = action.payload;
-            const existingOrderItemIndex = state.orderItems.findIndex(
-                (item) => item.product === orderItem.product && item.size === orderItem.size
-            );
+            // const { orderItem } = action.payload;
+            // const existingOrderItemIndex = state.orderItems.findIndex(
+            //     (item) => item.product === orderItem.product && item.size === orderItem.size
+            // );
 
-            if (existingOrderItemIndex !== -1) {
-                // Nếu sản phẩm với kích thước đã có trong đơn đặt hàng
-                state.orderItems[existingOrderItemIndex].amount += orderItem.amount;
+            // if (existingOrderItemIndex !== -1) {
+            //     // Nếu sản phẩm với kích thước đã có trong đơn đặt hàng
+            //     state.orderItems[existingOrderItemIndex].amount += orderItem.amount;
+            // } else {
+            //     // Nếu sản phẩm với kích thước chưa có trong đơn đặt hàng, thêm mới
+            //     state.orderItems.push(orderItem);
+            // }
+            const { orderItem } = action.payload
+            const itemOrder = state?.orderItems.find((item) => item?.product === orderItem.product && item.size === orderItem.size)
+            if (itemOrder) {
+                if (itemOrder.amount <= itemOrder.countInStock) {
+                    itemOrder.amount += orderItem?.amount
+                } else {
+                    state.isErrorOrder = true
+                }
             } else {
-                // Nếu sản phẩm với kích thước chưa có trong đơn đặt hàng, thêm mới
                 state.orderItems.push(orderItem);
             }
         },
@@ -59,7 +72,6 @@ export const orderSlide = createSlice({
             const selectedItemsOrder = state?.orderItemsSelected?.find((item) => item?.product === idProduct) // tìm những thằng kh có trong idProduct
             itemOrder.amount++
             if (selectedItemsOrder) {
-
                 selectedItemsOrder.amount++
             }
 

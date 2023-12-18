@@ -42,13 +42,13 @@ export const OrderSuccessPage = () => {
                     <WrapperDiv>
                         <label>Phương thức giao hàng :</label>
                         <p style={{ border: '1px solid #ccc', width: 'fit-content', padding: '10px 20px', backgroundColor: 'rgb(71,71,76)', color: '#fff' }}>
-                            <span>{orderContant.payment[state?.payment]}</span>
+                            <span>{orderContant.delivery[state?.delivery]}</span>
                         </p>
                     </WrapperDiv>
                     <WrapperDiv>
                         <label>Phương thức thanh toán :</label>
                         <p style={{ border: '1px solid #ccc', width: 'fit-content', padding: '10px 20px', backgroundColor: 'rgb(71,71,76)', color: '#fff' }}>
-                            <span>{orderContant.delivery[state?.delivery]}</span>
+                            <span>{orderContant.payment[state?.payment]}</span>
                         </p>
                     </WrapperDiv>
                     <div style={{ border: '1px solid #ccc', margin: '40px 0' }}></div>

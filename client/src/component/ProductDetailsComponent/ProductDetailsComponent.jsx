@@ -21,23 +21,27 @@ export const ProductDetailsComponent = ({ idProduct }) => {
         return res.response;
 
     }
+    console.log(location)
     const { data } = useQuery({ queryKey: ['product-detail'], queryFn: fetchGetDetailProduct })
     const productDetail = data?.data
 
     const handleOnChangeNum = (value) => {
+
         setNumProduct(Number(value))
+
     }
-    const handleChangeCount = (action) => {
+    const handleChangeCount = (action, limited) => {
         if (action === 'increase') {
-            setNumProduct(numProduct + 1)
+            if (!limited) {
+                setNumProduct(numProduct + 1)
+            }
         } else {
-            setNumProduct(numProduct - 1)
+            if (!limited) {
+                setNumProduct(numProduct - 1)
+            }
 
         }
     }
-    console.log('1231', productDetail?.discount)
-    console.log('size', selectedSize)
-    console.log('so', numProduct)
     const handleOrderProduct = () => {
         if (!user?.id) {
             navigate('/login', { state: location?.pathname }) // khi chưa login bị đá sang /login và truyền path theo để khi login tự động vô trang cũ
@@ -46,21 +50,26 @@ export const ProductDetailsComponent = ({ idProduct }) => {
                 message.error("Sản phẩm này đã hết vui lòng chọn sản phẩm khác !")
             } else if (!selectedSize) {
                 message.error("Vui lòng chọn size !")
-
             }
             else {
-                dispatch(addOrderProduct({
-                    orderItem: {
-                        name: productDetail?.name,
-                        amount: numProduct,
-                        image: productDetail?.image,
-                        price: productDetail?.price,
-                        size: selectedSize,
-                        discount: productDetail?.discount,
-                        product: productDetail?._id,
-                        countInStock: productDetail?.countInStock
-                    }
-                }))
+                if (numProduct > 0 && productDetail) {
+                    dispatch(addOrderProduct({
+                        orderItem: {
+                            name: productDetail?.name,
+                            amount: numProduct,
+                            image: productDetail?.image,
+                            price: productDetail?.price,
+                            size: selectedSize,
+                            discount: productDetail?.discount,
+                            product: productDetail?._id,
+                            countInStock: productDetail?.countInStock
+                        }
+                    }))
+                    message.success("Đã thêm vào giỏ hàng")
+
+                } else {
+                    message.error("Số lượng không được bé hơn 1")
+                }
             }
         }
     }
@@ -119,12 +128,12 @@ export const ProductDetailsComponent = ({ idProduct }) => {
                     <div style={{ margin: "6px 0" }}>Số lượng</div>
                     <WrapperQualityProduct>
                         <WrapperButtonQuality>
-                            <MinusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('decrease')} />
+                            <MinusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('decrease', numProduct === 1)} />
                         </WrapperButtonQuality>
                         {/* <WrapperInputNumber defaultValue={1} size='small' value={numProduct} onChange={handleOnChangeNum} /> */}
-                        <input defaultValue={1} value={numProduct} onChange={handleOnChangeNum} style={{ width: '30px', border: 'transparent', textAlign: 'center', borderLeft: '1px solid #ccc', borderRight: '1px solid #ccc' }} />
+                        <input defaultValue={1} min={1} max={productDetail?.countInStock} value={numProduct} onChange={handleOnChangeNum} style={{ width: '30px', border: 'transparent', textAlign: 'center', borderLeft: '1px solid #ccc', borderRight: '1px solid #ccc' }} />
                         <WrapperButtonQuality>
-                            <PlusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('increase')} />
+                            <PlusOutlined style={{ color: "#000", fontSize: "20px" }} onClick={() => handleChangeCount('increase', numProduct === productDetail?.countInStock)} />
                         </WrapperButtonQuality>
 
                     </WrapperQualityProduct>

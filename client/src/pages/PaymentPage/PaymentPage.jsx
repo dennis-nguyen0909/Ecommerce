@@ -153,7 +153,8 @@ export const PaymentPage = () => {
                 itemsPrice: priceMemo,
                 shippingPrice: deliveryPrice,
                 totalPrice: totalPriceAll,
-                user: user?.id
+                user: user?.id,
+                email: user?.email
             })
             if (+result?.EC === 1) {
                 const arrOrder = []
@@ -161,7 +162,7 @@ export const PaymentPage = () => {
                     arrOrder.push(element.product) // push id vao mang
                 });
                 dispatch(removeAllOrderProduct({ selectedCheck: arrOrder }))
-                message.success("Đặt Hàng Thành Công !")
+                message.success("Đơn hàng đã được xác nhận. Vui lòng kiểm tra email để xác nhận!")
                 navigate('/order-success', {
                     state: {
                         delivery,
