@@ -241,8 +241,9 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                     <Button onClick={onCloseCart}>X</Button>
                 </div>
                 {order?.orderItems?.length ? order?.orderItems?.map((item) => {
+                    console.log(item)
                     return (
-                        <div style={{ width: '500px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderTop: '1px solid #ccc', marginBottom: '10px' }}>
+                        <div key={item?.product} style={{ width: '500px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderTop: '1px solid #ccc', marginBottom: '10px' }}>
                             <div>
                                 <img width={'130px'} height={'130px'} objectFit={'cover'} src={item.image} />
                             </div>
@@ -263,7 +264,6 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                                 </WrapperQualityProduct>
                             </div>
                             <div onClick={() => handleDeleteOrder(item?.product)}>Xóa</div>
-
                         </div>
 
                     )

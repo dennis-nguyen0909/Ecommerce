@@ -36,6 +36,7 @@ export const WrapperPriceTextProduct = styled.h1`
 `
 
 export const WrapperAddressProduct = styled.div`
+    
     span.address{
         text-decoration:underline;
         font-size:15px;

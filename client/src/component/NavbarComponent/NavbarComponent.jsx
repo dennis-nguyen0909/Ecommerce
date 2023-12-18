@@ -12,9 +12,9 @@ export const NavbarComponent = ({ types }) => {
         switch (type) {
             case 'text':
                 return options.map((option) => {
-                    
+
                     return (
-                        < WrapperTextValue >
+                        < WrapperTextValue key={option} >
                             {option}
                         </WrapperTextValue >
 
@@ -25,7 +25,7 @@ export const NavbarComponent = ({ types }) => {
                     <Checkbox.Group style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px' }} onChange={onChange}>
                         {options.map((option) => {
                             return (
-                                <Checkbox style={{ marginLeft: '0' }} value={option.value} >{option.label}</Checkbox>
+                                <Checkbox key={option.value} style={{ marginLeft: '0' }} value={option.value} >{option.label}</Checkbox>
                             )
                         })}
                     </Checkbox.Group>

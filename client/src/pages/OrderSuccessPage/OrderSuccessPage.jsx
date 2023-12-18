@@ -54,7 +54,7 @@ export const OrderSuccessPage = () => {
                     <div style={{ border: '1px solid #ccc', margin: '40px 0' }}></div>
                     {state?.orders?.map((order) => {
                         return (
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly' }}>
+                            <div key={order?._id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
                                     <h2>Sản phẩm:</h2>
                                     <p>{order?.name}</p>

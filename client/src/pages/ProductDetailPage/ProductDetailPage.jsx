@@ -9,7 +9,7 @@ export const ProductDetailPage = () => {
     const navigate = useNavigate()
 
     return (
-        <div style={{ padding: '0 120px', background: 'rgb(247,247,247)', height: 'fit-content' }}>
+        <div style={{ padding: '0 120px', height: 'fit-content' }}>
             <h4>
                 <span style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>Trang chủ  </span >
                 Chi tiết sản phẩm

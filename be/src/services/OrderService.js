@@ -22,15 +22,15 @@ const createOrder = (data) => {
                 )
                 if (productData) {
                     return ({
-                        EC: 1,
+
                         status: 'Ok',
-                        message: "Add Order SuccessFully!!",
+                        message: " SuccessFully!!",
 
                     })
 
                 } else {
                     return ({
-                        EC: 0,
+
                         status: 'Error',
                         id: order.productData
                     })
@@ -66,7 +66,7 @@ const createOrder = (data) => {
                     PaidAt
                 })
                 if (addOrder) {
-                    await EmailService.sendEmailCreateOrder(email, orderItems, totalPrice);
+                    await EmailService.sendEmailCreateOrder(email, orderItems, totalPrice, paymentMethod, isPaid, PaidAt);
                     resolve({
                         EC: 1,
                         ES: 'SUCCESS',

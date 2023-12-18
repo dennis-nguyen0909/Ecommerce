@@ -63,9 +63,10 @@ export const MyOrderDetailsPage = () => {
                             <WrapperItemLabel>Giảm giá</WrapperItemLabel>
                         </div>
                         {data?.orderItems?.map((order) => {
+                            console.log('order', order)
                             return (
                                 <>
-                                    <WrapperProduct>
+                                    <WrapperProduct key={order?._id}>
                                         <WrapperNameProduct>
                                             <img src={order?.image}
                                                 style={{

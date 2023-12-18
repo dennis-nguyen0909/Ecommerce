@@ -2,7 +2,7 @@
 const nodemailer = require("nodemailer");
 const dotenv = require('dotenv');
 dotenv.config();
-const sendEmailCreateOrder = async (email, orderItems, totalPrice) => {
+const sendEmailCreateOrder = async (email, orderItems, totalPrice, paymentMethod, isPaid, PaidAt) => {
     const covertPrice = totalPrice.toLocaleString().replaceAll('.', '.')
     console.log(process.env.MAIL_ACCOUNT)
     console.log(process.env.MAIL_PASSWORD)
@@ -23,18 +23,22 @@ const sendEmailCreateOrder = async (email, orderItems, totalPrice) => {
             <div>Bạn đã đặt mua sản phẩm: <b>${item.name}<b/> </div>
             <div><img width={50} height={50} src=${item?.image} /> </div>
             <div>Số lượng : <b>${item.amount}<b/> </div>
-            <div>Tiền cần thanh toán : <b>${covertPrice}VND<b/> </div>
+            ${isPaid ? `<div>Bạn đã thanh toán bằng hình thức chuyển khoản</div>` :
+                `<div>Thanh toán bằng tiền mặt : <b>${covertPrice}VND<b/> </div>`
+            }
+            <div>Đơn hàng của bạn sẽ được gửi đi sau 24h!</div>
+            <b>Chúc quý khách một ngày tốt lành!</b>
         </div>`
     });
     let info = await transporter.sendMail({
         from: process.env.MAIL_ACCOUNT, // sender address
         to: "duyxitrum000@gmail.com", // list of receivers
-        subject: "Xác thực đặt hàng", // Subject line
+        subject: "Cám ơn , quý khách đã mua hàng tại Sneaker Asia.", // Subject line
         text: "Hello world?", // plain text body
         html: `<div>
                 <b>Bạn đã đặt hàng thành công tại shop Sneaker Asia</b>${listItems}
             </div>`, // html body
     });
-    console.log('info', info)
+
 }
 module.exports = { sendEmailCreateOrder }

@@ -73,7 +73,7 @@ export const MyOrderPage = () => {
                     {Array.isArray(data) && data?.map((item) => {
                         return (
                             <>
-                                <WrapperDiv key={item?.id}>
+                                <WrapperDiv key={item?._id}>
                                     <div>
                                         <h4>Trạng thái</h4>
                                         <div style={{ display: 'flex' }}>

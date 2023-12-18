@@ -61,7 +61,6 @@ export const OrderPage = () => {
             city: selectedCityData?.name
         })
     };
-    console.log(districts.map((item) => item.name))
     const handleHuyen = (value) => {
         const selectedCityData = districts.find((city) => city.code === value);
         setSelectedDistricts(selectedCityData)
@@ -347,7 +346,7 @@ export const OrderPage = () => {
                         {order?.orderItems?.length ? order?.orderItems?.map((item) => {
                             return (
                                 <>
-                                    <div style={{ width: '500px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                                    <div key={item?._id} style={{ width: '500px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
                                         <Checkbox onChange={onChangeCheckbox} value={item?.product} checked={selectedCheck.includes(item?.product)}></Checkbox>
                                         <div>
                                             <img width={'130px'} height={'130px'} objectFit={'cover'} src={item.image} />
@@ -369,8 +368,6 @@ export const OrderPage = () => {
                                             </WrapperQualityProduct>
                                             <p>Giá :{covertPrice(item?.price)}</p>
                                         </div>
-
-
                                     </div>
                                 </>
 
