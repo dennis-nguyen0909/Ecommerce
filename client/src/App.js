@@ -5,7 +5,7 @@ import { Default } from "./component/Default/Default";
 
 import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from 'react-redux'
-import { updateUser } from './redux/slides/userSlide'
+import { resetUser, updateUser } from './redux/slides/userSlide'
 import { isJsonString } from "./untils";
 import * as UserService from './services/UserService'
 import { NotFoundPage } from "./pages/NotFoundPage/NotFoundPage";
@@ -38,13 +38,23 @@ function App() {
   UserService.axiosJWT.interceptors.request.use(async (config) => {
     const currentTime = new Date()
     const { decoded } = handleDecoded()
+    // fix deloy
+    let storage = localStorage.getItem("refresh_token");
+    const refreshToken = JSON.parse(storage);
+    // lấy refresh_token và giải mã
+    const decodedRefreshToken = jwtDecode(refreshToken)
     if (decoded?.exp < currentTime.getTime() / 1000) {
-      const data = await UserService.refreshToken();
-      // nếu time token bé hơn time hiện tại / 1000 lấy ra milisecond giây
-      config.headers['token'] = `Bearer ${data?.access_token}`
-      // localStorage.setItem('access_token', data?.access_token)
-      // dispatch(updateUser({ access_token: data?.access_token }))
-      // console.log('data', data?.access_token)
+      //nếu mà rf còn hạn thì mới gọi đến refrshToken
+      if (decodedRefreshToken?.exp > currentTime.getTime() / 1000) {
+        const data = await UserService.refreshToken();
+        // nếu time token bé hơn time hiện tại / 1000 lấy ra milisecond giây
+        config.headers['token'] = `Bearer ${data?.access_token}`
+        // localStorage.setItem('access_token', data?.access_token)
+        // dispatch(updateUser({ access_token: data?.access_token }))
+        // console.log('data', data?.access_token)
+      } else {
+        dispatch(resetUser())
+      }
     }
     return config
 
@@ -52,8 +62,10 @@ function App() {
     return Promise.reject(err)
   })
   const handleGetDetailUser = async (id, access_token) => {
+    let storage = localStorage.getItem('refresh_token');
+    const refreshToken = JSON.parse(storage)
     const res = await UserService.getDetailUser(id, access_token); // lấy thông tin user từ token và id
-    dispatch(updateUser({ ...res?.response.data, access_token: access_token }))
+    dispatch(updateUser({ ...res?.response.data, access_token: access_token, refreshToken }))
     // truyền data mà res trả về vào redux
     // thì bên userSlide sẽ nhận được state và action trong đó action.payload là data user
   }

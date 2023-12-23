@@ -42,7 +42,8 @@ export const LogInPage = () => {
             return;
         } else if (data?.message?.EC === 1) {
             const access_token = data.message?.access_token
-            localStorage.setItem("access_token", data.message?.access_token)
+            localStorage.setItem("access_token", JSON.stringify(data.message?.access_token))
+            localStorage.setItem("refresh_token", JSON.stringify(data.message?.access_token))
             if (data.message?.access_token) {
                 const decoded = jwtDecode(data.message?.access_token) // jwt sẽ giải mã token và trả về payload gồm dữ liệu đã giải
                 if (decoded?.id) {
@@ -59,12 +60,14 @@ export const LogInPage = () => {
         }
     }, [isSuccess])
     const handleGetDetailUser = async (id, access_token) => {
+        const storage = localStorage.getItem('refresh_token');
+        const refreshToken = JSON.parse(storage)
         const res = await UserService.getDetailUser(id, access_token); // lấy thông tin user từ token và id
-        dispatch(updateUser({ ...res?.response.data, access_token: access_token }))
+        dispatch(updateUser({ ...res?.response.data, access_token: access_token, refreshToken }))
         // truyền data mà res trả về vào redux
         // thì bên userSlide sẽ nhận được state và action trong đó action.payload là data user
-        localStorage.setItem('access_token', JSON.stringify(access_token));
-        localStorage.setItem('user', JSON.stringify(res?.response.data));
+        // localStorage.setItem('access_token', JSON.stringify(access_token));
+        // localStorage.setItem('user', JSON.stringify(res?.response.data));
     }
     const handleOnChangeEmail = (value) => {
         setEmail(value);

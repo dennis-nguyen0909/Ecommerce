@@ -59,10 +59,11 @@ const loginUser = async (req, res) => {
         res.cookie('refresh_token', refresh_token, {
             httpOnly: true, // giúp ta chỉ lấy đc cookie qua http thôi 
             secure: false, // bảo mật phía client
-            // sameSite: 'strict'
+            sameSite: 'strict',
+            path: '/'
         })
         return res.status(200).json({
-            message: newData
+            message: newData, refresh_token
         })
     } catch (error) {
         return res.status(404).json({
@@ -144,10 +145,30 @@ const getDetailUser = async (req, res) => {
     }
 }
 
+// const refreshToken = async (req, res) => {
+//     try {
+//         // const token = req.headers.token.split(' ')[1];
+//         const token = req.cookies.refresh_token
+//         if (!token) {
+//             return res.status(200).json({
+//                 status: 'Lỗi',
+//                 message: "Không có token"
+//             })
+//         }
+//         const response = await JWTservice.refreshTokenService(token);
+//         // localStorage.setItem('access_token', response.access_token)
+//         return res.status(200).json(response)
+//     } catch (error) {
+//         return res.status(400).json({
+//             status: "err",
+//             message: error.message
+//         })
+//     }
+// }
 const refreshToken = async (req, res) => {
     try {
-        // const token = req.headers.token.split(' ')[1];
-        const token = req.cookies.refresh_token
+        const token = req.headers.token.split(' ')[1];
+        // const token = req.cookie.refresh_token
         if (!token) {
             return res.status(200).json({
                 status: 'Lỗi',

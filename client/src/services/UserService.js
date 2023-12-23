@@ -17,13 +17,23 @@ export const getDetailUser = async (id, access_token) => {
     });
     return res.data;
 }
-export const refreshToken = async (id, access_token) => {
-    const res = await axios.post(`${process.env.REACT_APP_API}user/refresh-token`, {
-        withCredentials: true// tự động lấy cookie
+// export const refreshToken = async () => {
+//     const res = await axios.post(`${process.env.REACT_APP_API}user/refresh-token`, {
+//         withCredentials: true// tự động lấy cookie
+//     });
+//     return res.data;
+
+// }
+export const refreshToken = async (refresh_token) => {
+    const res = await axios.post(`${process.env.REACT_APP_API}user/refresh-token`, {}, {
+        headers: {
+            token: `Bearer ${refresh_token}`
+        }
     });
     return res.data;
 
 }
+
 
 
 
