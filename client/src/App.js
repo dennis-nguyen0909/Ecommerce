@@ -46,7 +46,7 @@ function App() {
     if (decoded?.exp < currentTime.getTime() / 1000) {
       //nếu mà rf còn hạn thì mới gọi đến refrshToken
       if (decodedRefreshToken?.exp > currentTime.getTime() / 1000) {
-        const data = await UserService.refreshToken();
+        const data = await UserService.refreshToken(refreshToken);
         // nếu time token bé hơn time hiện tại / 1000 lấy ra milisecond giây
         config.headers['token'] = `Bearer ${data?.access_token}`
         // localStorage.setItem('access_token', data?.access_token)
