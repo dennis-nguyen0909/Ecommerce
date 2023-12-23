@@ -12,7 +12,6 @@ import { NotFoundPage } from "./pages/NotFoundPage/NotFoundPage";
 import LoadingComponent from "./component/LoadingComponent/LoadingComponent";
 
 function App() {
-  console.log(process.env.REACT_APP_API)
   const dispatch = useDispatch()
   const [isLoading, setIsLoading] = useState(false)
   const user = useSelector((state) => state.user)

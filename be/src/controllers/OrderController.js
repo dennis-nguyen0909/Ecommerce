@@ -1,7 +1,8 @@
 const OrderService = require("../services/OrderService")
 const createOrder = async (req, res) => {
     try {
-        const { paymentMethod, itemsPrice, totalPrice, shippingPrice, fullName, address, city, phone } = req.body
+        const { paymentMethod, itemsPrice, totalPrice, shippingPrice, fullName, address, city, phone, type } = req.body
+
 
         if (!paymentMethod || !itemsPrice || !totalPrice || !shippingPrice || !fullName || !address || !city || !phone) {
             return res.status(404).json({
@@ -25,14 +26,23 @@ const createOrder = async (req, res) => {
 }
 const getAllOder = async (req, res) => {
     try {
-        const id = req.params.id
-        if (!id) {
-            return res.status(200).json({
-                EC: 0,
-                EM: 'ERR',
-            })
-        }
-        const response = await OrderService.getAllOder(id);
+
+        const response = await OrderService.getAllOder();
+        return res.status(200).json({
+            EC: 1,
+            EM: 'SUCCESS',
+            response
+        })
+    } catch (error) {
+        return res.status(404).json({
+            message: error
+        })
+    }
+}
+const getAllType = async (req, res) => {
+    try {
+
+        const response = await OrderService.getAllType();
         return res.status(200).json({
             EC: 1,
             EM: 'SUCCESS',
@@ -78,6 +88,26 @@ const cancelOrderProduct = async (req, res) => {
         })
     }
 }
+const deleteManyOrder = async (req, res) => {
+    try {
+        const ids = req.body.ids
+        if (!ids) {
+            return res.status(404).json({
+                status: 'Error',
+                message: 'Vui long chon product'
+            })
+        }
+        const response = await OrderService.deleteManyOrder(ids);
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(404).json({
+            status: 'Error',
+            message: 'Loi tu services',
+            error
+        })
+    }
+}
+
 module.exports = {
-    createOrder, getAllOder, getDetailOrder, cancelOrderProduct
+    createOrder, getAllOder, getDetailOrder, cancelOrderProduct, deleteManyOrder, getAllType
 }

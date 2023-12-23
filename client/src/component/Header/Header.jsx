@@ -100,7 +100,7 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
         setSearch('');
     }
     const handleOnChangeNum = (value) => {
-        console.log('value', value)
+        // console.log('value', value)
     }
     const handleChangeCount = (value, id, limited) => {
         if (value === 'increase') {
@@ -240,7 +240,6 @@ export const Header = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                     <Button onClick={onCloseCart}>X</Button>
                 </div>
                 {order?.orderItems?.length ? order?.orderItems?.map((item) => {
-                    console.log(item)
                     return (
                         <div key={item?.product} style={{ width: '500px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderTop: '1px solid #ccc', marginBottom: '10px' }}>
                             <div>

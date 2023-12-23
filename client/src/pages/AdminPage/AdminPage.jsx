@@ -5,11 +5,13 @@ import { UserOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/ico
 import { Header } from '../../component/Header/Header'
 import { AdminUser } from '../../component/AdminUser/AdminUser';
 import { AdminProduct } from '../../component/AdminProduct/AdminProduct';
+import { AdminOrder } from '../../component/AdminOrder/AdminOrder';
 export const AdminPage = () => {
     const [keySelected, setKeySelected] = useState('');
     const items = [
         getItem('Quản lý người dùng', 'user', <UserOutlined />),
         getItem('Quản lý sản phẩm', 'product', <AppstoreOutlined />),
+        getItem('Quản lý đơn hàng', 'order', <AppstoreOutlined />),
         {
             type: 'divider',
         },
@@ -33,6 +35,10 @@ export const AdminPage = () => {
                 return (
                     <AdminProduct />
                 )
+            case 'order':
+                return (
+                    <AdminOrder />
+                )
             default:
                 return <></>
         }
@@ -49,7 +55,7 @@ export const AdminPage = () => {
                     style={{
                         width: 256,
                         boxShadow: '1px 1px 2px #ccc',
-                        height: '100vh'
+                        height: '1500px'
                     }}
                     defaultSelectedKeys={['1']}
                     defaultOpenKeys={['sub1']}

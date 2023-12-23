@@ -29,6 +29,7 @@ const sendEmailCreateOrder = async (email, orderItems, totalPrice, paymentMethod
             <b>Chúc quý khách một ngày tốt lành!</b>
         </div>`
     });
+  
     let info = await transporter.sendMail({
         from: process.env.MAIL_ACCOUNT, // sender address
         to: email, // list of receivers
@@ -38,6 +39,7 @@ const sendEmailCreateOrder = async (email, orderItems, totalPrice, paymentMethod
                 <b>Bạn đã đặt hàng thành công tại shop Sneaker Asia</b>${listItems}
             </div>`, // html body
     });
+
 
 }
 module.exports = { sendEmailCreateOrder }

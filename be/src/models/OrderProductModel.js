@@ -9,6 +9,7 @@ const orderSchema = new mongoose.Schema({
             price: { type: Number, require: true },
             size: { type: String },
             discount: { type: Number },
+            type: { type: String },
             product: {
                 type: mongoose.Schema.Types.ObjectId, //join bảng product với order (populate)
                 ref: 'Product',

@@ -37,6 +37,7 @@ export const AdminProduct = () => {
         clearFilters();
         setSearchText('');
     };
+
     const user = useSelector((state) => state.user)
     const initial = () => ({
         name: '',

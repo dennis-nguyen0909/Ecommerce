@@ -130,6 +130,7 @@ const getDetailProduct = (id) => {
                 message: "Đã tìm thấy sản phẩm!!",
                 data: product
             })
+
         } catch (error) {
             reject(error)
         }

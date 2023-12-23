@@ -1,4 +1,4 @@
-import { Table } from 'antd'
+import { Button, Table } from 'antd'
 import React, { useMemo } from 'react'
 import { useState, useEffect } from 'react';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
@@ -43,7 +43,10 @@ export const TableComponent = (props) => {
 
     return (
         <>
-            <button onClick={handleClick}>Export excel</button>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 10px' }}>
+                <Button onClick={handleClick}>Export excel</Button>
+
+            </div>
             {rowSelectedKeys.length > 0 && <div>
                 <button onClick={handleDeleteManyAll} s>Xóa tất cả</button>
             </div>}

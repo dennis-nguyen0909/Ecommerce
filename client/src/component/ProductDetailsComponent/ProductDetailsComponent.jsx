@@ -64,7 +64,8 @@ export const ProductDetailsComponent = ({ idProduct }) => {
                             size: selectedSize,
                             discount: productDetail?.discount,
                             product: productDetail?._id,
-                            countInStock: productDetail?.countInStock
+                            countInStock: productDetail?.countInStock,
+                            type: productDetail?.type,
                         }
                     }))
                     message.success("Đã thêm vào giỏ hàng")

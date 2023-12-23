@@ -3,6 +3,7 @@ const Product = require('../models/ProductModel')
 const bcrypt = require('bcrypt');
 const EmailService = require('../services/EmailService')
 const createOrder = (data) => {
+
     return new Promise(async (resolve, reject) => {
         const { paymentMethod, itemsPrice, totalPrice, shippingPrice, fullName, address, city, phone, user, orderItems, isPaid, PaidAt, email } = data
         try {
@@ -32,7 +33,7 @@ const createOrder = (data) => {
                     return ({
 
                         status: 'Error',
-                        id: order.productData
+                        id: order.product
                     })
                 }
             })
@@ -50,20 +51,22 @@ const createOrder = (data) => {
                 })
             } else {
                 const addOrder = await Order.create({
-                    orderItems,
+
                     shippingAddress: {
                         fullName,
                         address,
                         city,
                         phone,
                     },
+                    orderItems,
                     paymentMethod,
                     itemsPrice,
                     totalPrice,
                     shippingPrice,
                     user: user,
                     isPaid,
-                    PaidAt
+                    PaidAt,
+
                 })
                 if (addOrder) {
                     await EmailService.sendEmailCreateOrder(email, orderItems, totalPrice, paymentMethod, isPaid, PaidAt);
@@ -82,17 +85,17 @@ const createOrder = (data) => {
     })
 }
 
-const getAllOder = (id) => {
+const getAllOder = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const order = await Order.find({
-                user: id
-            })
+            const allOrder = await Order.find().sort({ createdAt: -1, updatedAt: -1 })
+
             resolve({
-                EC: 1,
-                EM: 'SUCCESS',
-                data: order
+                status: 'OK',
+                message: 'Success',
+                data: allOrder
             })
+
         } catch (err) {
             reject(err)
         }
@@ -170,6 +173,59 @@ const cancelOrderProduct = (id, data) => {
         }
     })
 }
+const deleteManyOrder = (ids) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await Order.deleteMany({
+                _id: { $in: ids }
+            })
+            resolve({
+                status: 'Ok',
+                EC: 1,
+                Message: "Delete Success"
+            })
+        } catch (error) {
+            resolve({
+                status: 'Error',
+                EC: 0,
+                Message: "Delete Error"
+            })
+        }
+    })
+}
+const getAllType = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const result = await Order.aggregate([
+                {
+                    $unwind: '$orderItems', // Tách các mục trong mảng orderItems
+                },
+                {
+                    $group: {
+                        _id: '$orderItems.type', // Nhóm theo loại sản phẩm
+                        count: { $sum: 1 }, // Đếm số lượng đơn hàng trong từng nhóm
+                    },
+                },
+                {
+                    $project: {
+                        _id: 0, // Ẩn trường _id
+                        type: '$_id', // Đổi tên trường _id thành type
+                        count: 1, // Giữ trường count
+                    },
+                },
+            ]);
+
+            resolve({
+                status: 'OK',
+                message: 'Success',
+                data: result
+            })
+
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
 module.exports = {
-    createOrder, getAllOder, getDetailOrder, cancelOrderProduct
+    createOrder, getAllOder, getDetailOrder, cancelOrderProduct, deleteManyOrder, getAllType
 }  
